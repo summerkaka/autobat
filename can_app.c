@@ -47,15 +47,15 @@ CAN_Listen(void *para)
 {
     int ret = 0;
     int i = 0;
-    can_frame frame_rx;
+    struct can_frame frame_rx;
 
     while (1) {
         ret = CAN_RecvFrame(fd_cansocket, &frame_rx, 20);
-        if (ret > 0) {
+        if (ret > 0 && (((stCanId *)&frame_rx.can_id)->Target == CANID_CHARGE)) {
             pthread_rwlock_wrlock(&lock_canpool);
             for (i = 0; i < MSG_NUM; i++) {
                 if (canrx_pool[i].can_id == 0) {
-                    memcpy(&canrx_pool[i], &frame_rx, sizeof(can_frame));
+                    memcpy(&canrx_pool[i], &frame_rx, sizeof(struct can_frame));
                     break;
                 }
             }
@@ -77,7 +77,7 @@ void *
 CAN_Poll(void *interval)
 {
     uint8_t i = 0;
-    uint16_t inverval_us = *(uint8_t *)interval * 1000;
+    uint32_t inverval_us = *(uint16_t *)interval * 1000;
 
     while (1)
     {
@@ -99,13 +99,15 @@ CAN_Poll(void *interval)
 void *
 UpdateUi(void *para)
 {
-    uint8_t i = 0;
+    int i = 0;
     tuCanId can_id;
 
     while (1)
     {
         sem_wait(&sem_display);
         pthread_rwlock_rdlock(&lock_canpool);
+
+//        RealTimeCurve::updateCurve(&i);
 
         for (i = 0; i < MSG_NUM; i++) {
             if (canrx_pool[i].can_id != 0) {
@@ -120,6 +122,7 @@ UpdateUi(void *para)
 
         pthread_rwlock_unlock(&lock_canpool);
     }
+    return (void *)NULL;
 }
 
 

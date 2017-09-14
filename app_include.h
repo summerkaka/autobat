@@ -28,16 +28,11 @@ extern "C" {
 #include <sys/time.h>
 #include <sys/types.h>
 
-
-
 #include "can_app.h"
 #include "can_if.h"
 #include "gpio.h"
 #include "libsocketcan.h"
-
-//#include "mainwindow.h"
-//#include <QApplication>
-//#include <QMessageBox>
+#include "main.h"
 
 #define USE_QTGUI  0
 #define ZC702

@@ -7,36 +7,38 @@
 #include <QScatterSeries>
 #include <QChart>
 #include <QChartView>
+#include "realtimecurve.h"
+
+
 using namespace QtCharts;
 
 class RealTimeCurve : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RealTimeCurve(QWidget *parent = nullptr);
+    explicit RealTimeCurve(QWidget *parent = nullptr, const QString &tittle = "实时动态曲线");
     ~RealTimeCurve();
+    void updateCurve(void);
 
 protected:
     void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 
 private:
-    /**
-     * 接收到数据源发送来的数据，数据源可以下位机，采集卡，传感器等。
-     */
-    void dataReceived(int value1, int value2);
     int timerId;
-    int maxValue; // 业务数据的最大值
     float y_max = 0, y_min = 0;
+    QString chart_tittle;
     QList<double> data1, data2; // 存储业务数据的 list
     QChart *chart;
     QChartView *chartView;
     QSplineSeries *curve1, *curve2;
-    QScatterSeries *scatterSeries1, *scatterSeries2;
+    QScatterSeries *scatter1, *scatter2;
 
 signals:
 
 public slots:
 
 };
+
+
 
 #endif // REALTIMECURVE_H

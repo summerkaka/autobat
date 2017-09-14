@@ -26,11 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    can_app.cpp \
     libsocketcan.c \
     gpio.c \
     can_if.c \
-    realtimecurve.cpp
+    realtimecurve.cpp \
+    can_app.c
 
 HEADERS += \
         mainwindow.h \
@@ -38,9 +38,10 @@ HEADERS += \
     gpio.h \
     can_netlink.h \
     can_if.h \
-    can_app.h \
     app_include.h \
-    realtimecurve.h
+    realtimecurve.h \
+    main.h \
+    can_app.h
 
 FORMS += \
         mainwindow.ui

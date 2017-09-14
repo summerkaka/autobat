@@ -263,19 +263,6 @@ padding:0 1px;
        </rect>
       </property>
      </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>20</y>
-        <width>96</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>voltage curve</string>
-      </property>
-     </widget>
      <widget class="RealTimeCurve" name="widget_2" native="true">
       <property name="geometry">
        <rect>
@@ -284,19 +271,6 @@ padding:0 1px;
         <width>856</width>
         <height>241</height>
        </rect>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>400</x>
-        <y>340</y>
-        <width>131</width>
-        <height>17</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>temperature curve</string>
       </property>
      </widget>
     </widget>

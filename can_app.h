@@ -105,8 +105,8 @@ typedef struct {
     uint8_t data[CMD_MAXLENGTH];
 } stCanPacket;
 
-void * CAN_Listen(void *para);
-void * CAN_Poll(void *interval);
-void * UpdateUi(void *para);
+void* CAN_Listen(void *para);
+void* CAN_Poll(void *interval);
+void* UpdateUi(void *para);
 
 #endif // CAN_APP_H
