@@ -16,7 +16,10 @@ class RealTimeCurve : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RealTimeCurve(QWidget *parent = nullptr, const QString &tittle = "实时动态曲线");
+    explicit RealTimeCurve(float &data1,
+                           float &data2,
+                           QWidget *parent = nullptr,
+                            const QString &tittle = "实时动态曲线");
     ~RealTimeCurve();
     void updateCurve(void);
 
@@ -26,6 +29,7 @@ protected:
 private:
     int timerId;
     float y_max = 0, y_min = 0;
+    float newdata1, newdata2;
     QString chart_tittle;
     QList<double> data1, data2; // 存储业务数据的 list
     QChart *chart;

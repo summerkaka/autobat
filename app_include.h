@@ -36,6 +36,7 @@ extern "C" {
 
 #define USE_QTGUI  0
 #define ZC702
+#define DESKTOP
 //#define HMBIRD_MB
 
 extern pthread_rwlock_t lock_canpool;

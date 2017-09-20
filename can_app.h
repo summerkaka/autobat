@@ -105,6 +105,18 @@ typedef struct {
     uint8_t data[CMD_MAXLENGTH];
 } stCanPacket;
 
+typedef struct {
+    uint8_t     status;
+    float       voltage;
+    float       current;
+    float       temperature;
+    int16_t     level;
+    int16_t     capacity;
+    uint16_t    err_code;
+} stBattery;
+extern stBattery Battery_1;
+extern stBattery Battery_2;
+
 void* CAN_Listen(void *para);
 void* CAN_Poll(void *interval);
 void* UpdateUi(void *para);
