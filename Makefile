@@ -53,17 +53,17 @@ OBJECTS_DIR   = ./
 SOURCES       = main.cpp \
 		mainwindow.cpp \
 		libsocketcan.c \
-		gpio.c \
-		can_if.c \
 		realtimecurve.cpp \
-		can_app.c moc_mainwindow.cpp \
+		can_if.cpp \
+		gpio.cpp \
+		can_app.cpp moc_mainwindow.cpp \
 		moc_realtimecurve.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		libsocketcan.o \
-		gpio.o \
-		can_if.o \
 		realtimecurve.o \
+		can_if.o \
+		gpio.o \
 		can_app.o \
 		moc_mainwindow.o \
 		moc_realtimecurve.o
@@ -257,10 +257,10 @@ DIST          = /opt/Qt5.9.1/5.9.1/gcc_64/mkspecs/features/spec_pre.prf \
 		can_app.h main.cpp \
 		mainwindow.cpp \
 		libsocketcan.c \
-		gpio.c \
-		can_if.c \
 		realtimecurve.cpp \
-		can_app.c
+		can_if.cpp \
+		gpio.cpp \
+		can_app.cpp
 QMAKE_TARGET  = autobat
 DESTDIR       = 
 TARGET        = autobat
@@ -657,7 +657,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt5.9.1/5.9.1/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.h libsocketcan.h gpio.h can_netlink.h can_if.h app_include.h realtimecurve.h main.h can_app.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp libsocketcan.c gpio.c can_if.c realtimecurve.cpp can_app.c $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp libsocketcan.c realtimecurve.cpp can_if.cpp gpio.cpp can_app.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -821,6 +821,8 @@ moc_mainwindow.cpp: /opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QMainWindow \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -968,6 +970,8 @@ moc_realtimecurve.cpp: /opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QWidget \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -1123,6 +1127,8 @@ ui_mainwindow.h: mainwindow.ui \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -1283,6 +1289,8 @@ main.o: main.cpp mainwindow.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -1310,12 +1318,10 @@ main.o: main.cpp mainwindow.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtGui/qguiapplication.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtGui/qinputmethod.h \
 		app_include.h \
-		can_app.h \
-		can_if.h \
-		gpio.h \
 		libsocketcan.h \
 		can_netlink.h \
-		main.h
+		main.h \
+		can_app.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -1447,6 +1453,8 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -1512,6 +1520,8 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/qprogressbar.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QPushButton \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/qpushbutton.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QRadioButton \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/qradiobutton.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QSlider \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QStatusBar \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/qstatusbar.h \
@@ -1526,24 +1536,6 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 libsocketcan.o: libsocketcan.c libsocketcan.h \
 		can_netlink.h
 	$(CC) -c $(CFLAGS) $(INCPATH) -o libsocketcan.o libsocketcan.c
-
-gpio.o: gpio.c app_include.h \
-		can_app.h \
-		can_if.h \
-		gpio.h \
-		libsocketcan.h \
-		can_netlink.h \
-		main.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o gpio.o gpio.c
-
-can_if.o: can_if.c app_include.h \
-		can_app.h \
-		can_if.h \
-		gpio.h \
-		libsocketcan.h \
-		can_netlink.h \
-		main.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o can_if.o can_if.c
 
 realtimecurve.o: realtimecurve.cpp realtimecurve.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/QWidget \
@@ -1669,6 +1661,8 @@ realtimecurve.o: realtimecurve.cpp realtimecurve.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCore/QPointF \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QScatterSeries \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qscatterseries.h \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QValueAxis \
+		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qvalueaxis.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QChart \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/qchart.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtCharts/QLegend \
@@ -1697,14 +1691,29 @@ realtimecurve.o: realtimecurve.cpp realtimecurve.h \
 		/opt/Qt5.9.1/5.9.1/gcc_64/include/QtWidgets/qgridlayout.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o realtimecurve.o realtimecurve.cpp
 
-can_app.o: can_app.c app_include.h \
-		can_app.h \
-		can_if.h \
-		gpio.h \
+can_if.o: can_if.cpp app_include.h \
 		libsocketcan.h \
 		can_netlink.h \
-		main.h
-	$(CC) -c $(CFLAGS) $(INCPATH) -o can_app.o can_app.c
+		main.h \
+		gpio.h \
+		can_app.h \
+		can_if.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o can_if.o can_if.cpp
+
+gpio.o: gpio.cpp app_include.h \
+		libsocketcan.h \
+		can_netlink.h \
+		main.h \
+		gpio.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gpio.o gpio.cpp
+
+can_app.o: can_app.cpp app_include.h \
+		libsocketcan.h \
+		can_netlink.h \
+		main.h \
+		can_app.h \
+		can_if.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o can_app.o can_app.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

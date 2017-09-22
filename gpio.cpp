@@ -1,4 +1,5 @@
 #include "app_include.h"
+#include <gpio.h>
 
 #define PATH_BUF_SIZE 64
 

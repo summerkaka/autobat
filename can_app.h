@@ -117,6 +117,17 @@ typedef struct {
 extern stBattery Battery_1;
 extern stBattery Battery_2;
 
+typedef struct {
+    uint8_t     status;
+    float       temperature;
+    float       setpoint;
+    float       duty;
+    int16_t     kp;
+    int16_t     ki;
+    int16_t     kd;
+} stHeater;
+extern stHeater Heater;
+
 void* CAN_Listen(void *para);
 void* CAN_Poll(void *interval);
 void* UpdateUi(void *para);

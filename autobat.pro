@@ -27,10 +27,10 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     libsocketcan.c \
-    gpio.c \
-    can_if.c \
     realtimecurve.cpp \
-    can_app.c
+    can_if.cpp \
+    gpio.cpp \
+    can_app.cpp
 
 HEADERS += \
         mainwindow.h \

@@ -1,4 +1,7 @@
 ﻿#include "app_include.h"
+#include <gpio.h>
+#include <can_app.h>
+#include <can_if.h>
 
 static int WaitRxAvailable(int fd, uint32_t wait_useconds)
 {
@@ -48,8 +51,9 @@ static int WaitTxAvailable(int fd, uint32_t wait_useconds)
 
 static int Phy_Init(void)
 {
+    char para[] = "out";    // for being used below since C++ forbids convert const string to char*
 #if defined ZC702
-    if (Gpio_Pin_Config(9, 906, "out", 0) < 0) {
+    if (Gpio_Pin_Config(9, 906, para, 0) < 0) {
         perror("fail to config CAN phy\n");
         return -1;
     }

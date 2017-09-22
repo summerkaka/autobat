@@ -28,15 +28,13 @@ extern "C" {
 #include <sys/time.h>
 #include <sys/types.h>
 
-#include "can_app.h"
-#include "can_if.h"
-#include "gpio.h"
 #include "libsocketcan.h"
 #include "main.h"
 
 #define USE_QTGUI  0
 #define ZC702
 #define DESKTOP
+
 //#define HMBIRD_MB
 
 extern pthread_rwlock_t lock_canpool;

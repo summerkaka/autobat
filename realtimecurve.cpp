@@ -2,20 +2,20 @@
 #include <QDateTime>
 #include <QHBoxLayout>
 
-#define MAXSIZE 51      // 只存储最新的 51 个数据
+#define MAXSIZE 181      // 只存储最新的 51 个数据
 #define MAXVALUE 100    // 数据的最大值为 100，因为我们生成的随机数为 [0, 100]
 
-float dummy = 0;
-
-RealTimeCurve::RealTimeCurve(float &data1, float &data2, QWidget *parent, const QString &tittle) :
+RealTimeCurve::RealTimeCurve(float &newd1, float &newd2, QWidget *parent, const QString &tittle) :
     QWidget(parent),
+    newdata1(newd1),
+    newdata2(newd2),
     chart_tittle(tittle)
 {
     y_max = 0;
     y_min = 0;
-    newdata1 = data1;
-    newdata2 = data2;
-    timerId = startTimer(200);
+//    newdata1 = data1;
+//    newdata2 = data2;
+    timerId = startTimer(SAMPLE_INTERVAL * 1000);
     qsrand(QDateTime::currentDateTime().toTime_t());
     curve1 = new QSplineSeries();
     curve2 = new QSplineSeries();
@@ -25,13 +25,14 @@ RealTimeCurve::RealTimeCurve(float &data1, float &data2, QWidget *parent, const 
     scatter2->setMarkerSize(8);
     // 预先分配坐标，这样在 dataReceived 中直接替换坐标了
     for (int i = 0; i < MAXSIZE; ++i) {
-        curve1->append(i * 10, -10);
-        scatter1->append(i * 10, -10);
-        curve2->append(i * 10, -10);
-        scatter2->append(i * 10, -10);
+        curve1->append(i, -10);
+        scatter1->append(i, -10);
+        curve2->append(i, -10);
+        scatter2->append(i, -10);
 //        scatterSeries->append(i * 10, -10);
     }
     chart = new QChart();
+
     chart->addSeries(curve1);
     chart->addSeries(curve2);
     chart->addSeries(scatter1);
@@ -65,18 +66,16 @@ void RealTimeCurve::timerEvent(QTimerEvent *event)
     }
 }
 
+void RealTimeCurve::Config(float &data1, float &data2, const QString &title, int16_t sample_interval)
+{
+    newdata1 = data1;
+    newdata2 = data2;
+    chart->setTitle(title);
+    timerId = startTimer(sample_interval);
+}
+
 void RealTimeCurve::updateCurve(void)
 {
-    // 模拟不停的接收到新数据
-//    int newData = qrand() % (MAXVALUE + 1);
-//    int newData2 = qrand() % (MAXVALUE + 1);
-//    y_max = y_max > newdata1 ? y_max : newdata1;
-//    y_max = y_max > newdata2 ? y_max : newdata2;
-//    y_min = y_min < newdata1 ? y_min : newdata1;
-//    y_min = y_min < newdata2 ? y_min : newdata2;
-
-//    data1 << value[1];
-//    data2 << value[2];
     data1 << newdata1;
     data2 << newdata2;
     // 数据个数超过了指定值，则删除最先接收到的数据，实现曲线向前移动
@@ -91,7 +90,7 @@ void RealTimeCurve::updateCurve(void)
         // 替换曲线中现有数据
         int delta1 = MAXSIZE - data1.size();
         int delta2 = MAXSIZE - data2.size();
-        chart->axisY()->setRange(y_min, y_max);
+        chart->axisY()->setRange(y_min-5, y_max+5);
         for (int i = 0; i < data1.size(); ++i) {
             curve1->replace(delta1+i, curve1->at(delta1+i).x(), data1.at(i));
             scatter1->replace(delta1+i, scatter1->at(delta1+i).x(), data1.at(i));
