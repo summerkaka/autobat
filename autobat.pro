@@ -27,10 +27,11 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     libsocketcan.c \
-    realtimecurve.cpp \
     can_if.cpp \
     gpio.cpp \
-    can_app.cpp
+    can_app.cpp \
+    dualcurve.cpp \
+    singlecurve.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,9 +40,10 @@ HEADERS += \
     can_netlink.h \
     can_if.h \
     app_include.h \
-    realtimecurve.h \
     main.h \
-    can_app.h
+    can_app.h \
+    dualcurve.h \
+    singlecurve.h
 
 FORMS += \
         mainwindow.ui

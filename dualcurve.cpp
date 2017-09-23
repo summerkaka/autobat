@@ -1,11 +1,11 @@
-#include "realtimecurve.h"
+#include "dualcurve.h"
 #include <QDateTime>
 #include <QHBoxLayout>
 
 #define MAXSIZE 181      // 只存储最新的 51 个数据
 #define MAXVALUE 100    // 数据的最大值为 100，因为我们生成的随机数为 [0, 100]
 
-RealTimeCurve::RealTimeCurve(float &newd1, float &newd2, QWidget *parent, const QString &tittle) :
+DualCurve::DualCurve(float &newd1, float &newd2, QWidget *parent, const QString &tittle) :
     QWidget(parent),
     newdata1(newd1),
     newdata2(newd2),
@@ -49,10 +49,10 @@ RealTimeCurve::RealTimeCurve(float &newd1, float &newd2, QWidget *parent, const 
     setLayout(layout);
 }
 
-RealTimeCurve::~RealTimeCurve()
+DualCurve::~DualCurve()
 {}
 
-void RealTimeCurve::timerEvent(QTimerEvent *event)
+void DualCurve::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == timerId) {
         // 模拟不停的接收到新数据
@@ -66,15 +66,15 @@ void RealTimeCurve::timerEvent(QTimerEvent *event)
     }
 }
 
-void RealTimeCurve::Config(float &data1, float &data2, const QString &title, int16_t sample_interval)
-{
-    newdata1 = data1;
-    newdata2 = data2;
-    chart->setTitle(title);
-    timerId = startTimer(sample_interval);
-}
+//void DualCurve::Config(float &data1, float &data2, const QString &title, int16_t sample_interval)
+//{
+//    newdata1 = data1;
+//    newdata2 = data2;
+//    chart->setTitle(title);
+//    timerId = startTimer(sample_interval);
+//}
 
-void RealTimeCurve::updateCurve(void)
+void DualCurve::updateCurve(void)
 {
     data1 << newdata1;
     data2 << newdata2;

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="tabWidget_bat">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -30,13 +30,13 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>battery</string>
      </attribute>
-     <widget class="QTableWidget" name="tableWidget">
+     <widget class="QTableWidget" name="tableWidget_bat">
       <property name="geometry">
        <rect>
         <x>60</x>
@@ -253,7 +253,7 @@ padding:0 1px;
        </property>
       </widget>
      </widget>
-     <widget class="RealTimeCurve" name="rtcurve_bat_v" native="true">
+     <widget class="DualCurve" name="rtcurve_bat_v" native="true">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -263,7 +263,7 @@ padding:0 1px;
        </rect>
       </property>
      </widget>
-     <widget class="RealTimeCurve" name="rtcurve_bat_t" native="true">
+     <widget class="DualCurve" name="rtcurve_bat_t" native="true">
       <property name="geometry">
        <rect>
         <x>400</x>
@@ -278,13 +278,13 @@ padding:0 1px;
      <attribute name="title">
       <string>heater</string>
      </attribute>
-     <widget class="QTableWidget" name="tableWidget_2">
+     <widget class="QTableWidget" name="tableWidget_heater">
       <property name="geometry">
        <rect>
         <x>30</x>
         <y>35</y>
-        <width>221</width>
-        <height>176</height>
+        <width>216</width>
+        <height>146</height>
        </rect>
       </property>
       <row>
@@ -304,11 +304,6 @@ padding:0 1px;
       </row>
       <row>
        <property name="text">
-        <string>set point</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
         <string>duty cycle</string>
        </property>
       </row>
@@ -318,7 +313,7 @@ padding:0 1px;
        </property>
       </column>
      </widget>
-     <widget class="QWidget" name="rtcurve_heater_t" native="true">
+     <widget class="SingleCurve" name="rtcurve_heater_t" native="true">
       <property name="geometry">
        <rect>
         <x>265</x>
@@ -331,10 +326,10 @@ padding:0 1px;
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>15</x>
-        <y>325</y>
+        <x>35</x>
+        <y>195</y>
         <width>191</width>
-        <height>231</height>
+        <height>201</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -356,24 +351,11 @@ padding:0 1px;
       <property name="title">
        <string>settings</string>
       </property>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QLineEdit" name="lineEdit_heaterKp">
        <property name="geometry">
         <rect>
-         <x>95</x>
-         <y>195</y>
-         <width>89</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>download</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEdit_2">
-       <property name="geometry">
-        <rect>
-         <x>85</x>
-         <y>85</y>
+         <x>90</x>
+         <y>90</y>
          <width>71</width>
          <height>25</height>
         </rect>
@@ -382,11 +364,11 @@ padding:0 1px;
         <string>Kp</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="lineEdit_heaterKi">
        <property name="geometry">
         <rect>
-         <x>85</x>
-         <y>120</y>
+         <x>90</x>
+         <y>125</y>
          <width>71</width>
          <height>25</height>
         </rect>
@@ -395,11 +377,11 @@ padding:0 1px;
         <string>Ki</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_4">
+      <widget class="QLineEdit" name="lineEdit_heaterKd">
        <property name="geometry">
         <rect>
-         <x>85</x>
-         <y>155</y>
+         <x>90</x>
+         <y>160</y>
          <width>71</width>
          <height>25</height>
         </rect>
@@ -411,8 +393,8 @@ padding:0 1px;
       <widget class="QLabel" name="label">
        <property name="geometry">
         <rect>
-         <x>55</x>
-         <y>90</y>
+         <x>60</x>
+         <y>95</y>
          <width>26</width>
          <height>16</height>
         </rect>
@@ -424,8 +406,8 @@ padding:0 1px;
       <widget class="QLabel" name="label_2">
        <property name="geometry">
         <rect>
-         <x>55</x>
-         <y>125</y>
+         <x>60</x>
+         <y>130</y>
          <width>26</width>
          <height>17</height>
         </rect>
@@ -437,8 +419,8 @@ padding:0 1px;
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>55</x>
-         <y>160</y>
+         <x>60</x>
+         <y>165</y>
          <width>26</width>
          <height>17</height>
         </rect>
@@ -447,11 +429,11 @@ padding:0 1px;
         <string>Kd</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_5">
+      <widget class="QLineEdit" name="lineEdit_heaterSP">
        <property name="geometry">
         <rect>
-         <x>85</x>
-         <y>50</y>
+         <x>90</x>
+         <y>55</y>
          <width>71</width>
          <height>25</height>
         </rect>
@@ -463,8 +445,8 @@ padding:0 1px;
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
-         <x>15</x>
-         <y>55</y>
+         <x>20</x>
+         <y>60</y>
          <width>66</width>
          <height>16</height>
         </rect>
@@ -473,7 +455,7 @@ padding:0 1px;
         <string>set point</string>
        </property>
       </widget>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="radioButton_heaterOn">
        <property name="geometry">
         <rect>
          <x>15</x>
@@ -486,10 +468,10 @@ padding:0 1px;
         <string>on</string>
        </property>
       </widget>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="radioButton_HeaterOff">
        <property name="geometry">
         <rect>
-         <x>65</x>
+         <x>60</x>
          <y>25</y>
          <width>46</width>
          <height>23</height>
@@ -499,13 +481,13 @@ padding:0 1px;
         <string>off</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_6">
+      <widget class="QPushButton" name="pushButton_heaterUpLD">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>195</y>
-         <width>66</width>
-         <height>25</height>
+         <x>125</x>
+         <y>25</y>
+         <width>56</width>
+         <height>21</height>
         </rect>
        </property>
        <property name="text">
@@ -619,9 +601,15 @@ padding:0 1px;
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>RealTimeCurve</class>
+   <class>DualCurve</class>
    <extends>QWidget</extends>
-   <header location="global">realtimecurve.h</header>
+   <header>dualcurve.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SingleCurve</class>
+   <extends>QWidget</extends>
+   <header location="global">singlecurve.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

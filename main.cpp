@@ -4,6 +4,7 @@
 #include "app_include.h"
 #include <can_app.h>
 
+
 pthread_rwlock_t  lock_canpool;
 sem_t sem_display;
 int fd_cansocket = 0;
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
     
 //    fd_cansocket = CAN_Init("can0", CAN_BITRATE);
 
-    pthread_create(&tid_listen, NULL, &CAN_Listen, NULL);
+    pthread_create(&tid_listen, NULL, &CAN_Listen, &w);
     pthread_create(&tid_poll, NULL, &CAN_Poll, &poll_second);
     pthread_create(&tid000, NULL, &DummyData, NULL);
 

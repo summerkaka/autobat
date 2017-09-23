@@ -20,6 +20,10 @@
 #define CMD_PROGRAM_START   0xae
 #define CMD_PROGRAM_END     0xaf
 
+#define CMD_RD_ZONE     0x63
+#define CMD_WR_ZONE     0x64
+#define CMD_WRITE_SP    0x98
+
 #define GetLongH(ptr)   (uint32_t)*(uint8_t *)(ptr) << 24 | \
                         (uint32_t)*((uint8_t *)(ptr) + 1) << 16 | \
                         (uint32_t)*((uint8_t *)(ptr) + 2) << 8  | \
@@ -105,6 +109,11 @@ typedef struct {
     uint8_t data[CMD_MAXLENGTH];
 } stCanPacket;
 
+typedef union {
+    float   _float;
+    int32_t _int32;
+} tuType32Bit;
+
 typedef struct {
     uint8_t     status;
     float       voltage;
@@ -113,6 +122,7 @@ typedef struct {
     int16_t     level;
     int16_t     capacity;
     uint16_t    err_code;
+    bool        mux_on;
 } stBattery;
 extern stBattery Battery_1;
 extern stBattery Battery_2;
@@ -120,6 +130,7 @@ extern stBattery Battery_2;
 typedef struct {
     uint8_t     status;
     float       temperature;
+    int32_t     pt100_adccode;
     float       setpoint;
     float       duty;
     int16_t     kp;
@@ -131,5 +142,6 @@ extern stHeater Heater;
 void* CAN_Listen(void *para);
 void* CAN_Poll(void *interval);
 void* UpdateUi(void *para);
+void SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, uint8_t dlc);
 
 #endif // CAN_APP_H

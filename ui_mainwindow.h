@@ -29,8 +29,9 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
-#include <realtimecurve.h>
-#include <can_app.h>
+#include <singlecurve.h>
+#include "dualcurve.h"
+#include "can_app.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -38,9 +39,9 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QTabWidget *tabWidget;
+    QTabWidget *tabWidget_bat;
     QWidget *tab;
-    QTableWidget *tableWidget;
+    QTableWidget *tableWidget_bat;
     QGroupBox *groupBox;
     QLabel *label_4;
     QSlider *setcurrent_slider_2;
@@ -51,24 +52,23 @@ public:
     QSlider *setcurrent_slider_1;
     QCheckBox *checkBox_bat1_enable;
     QCheckBox *checkBox_bat1_charge;
-    RealTimeCurve *rtcurve_bat_v;
-    RealTimeCurve *rtcurve_bat_t;
+    DualCurve *rtcurve_bat_v;
+    DualCurve *rtcurve_bat_t;
     QWidget *tab_3;
-    QTableWidget *tableWidget_2;
-    QWidget *rtcurve_heater_t;
+    QTableWidget *tableWidget_heater;
+    SingleCurve *rtcurve_heater_t;
     QGroupBox *groupBox_3;
-    QPushButton *pushButton_3;
-    QLineEdit *lineEdit_2;
-    QLineEdit *lineEdit_3;
-    QLineEdit *lineEdit_4;
+    QLineEdit *lineEdit_heaterKp;
+    QLineEdit *lineEdit_heaterKi;
+    QLineEdit *lineEdit_heaterKd;
     QLabel *label;
     QLabel *label_2;
     QLabel *label_3;
-    QLineEdit *lineEdit_5;
+    QLineEdit *lineEdit_heaterSP;
     QLabel *label_6;
-    QRadioButton *radioButton;
-    QRadioButton *radioButton_2;
-    QPushButton *pushButton_6;
+    QRadioButton *radioButton_heaterOn;
+    QRadioButton *radioButton_HeaterOff;
+    QPushButton *pushButton_heaterUpLD;
     QWidget *tab_2;
     QPushButton *pushButton;
     QLineEdit *lineEdit;
@@ -87,37 +87,37 @@ public:
         MainWindow->resize(1280, 800);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        tabWidget = new QTabWidget(centralWidget);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(5, 5, 1271, 696));
-        tabWidget->setMaximumSize(QSize(16777215, 16777215));
+        tabWidget_bat = new QTabWidget(centralWidget);
+        tabWidget_bat->setObjectName(QStringLiteral("tabWidget_bat"));
+        tabWidget_bat->setGeometry(QRect(5, 5, 1271, 696));
+        tabWidget_bat->setMaximumSize(QSize(16777215, 16777215));
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
-        tableWidget = new QTableWidget(tab);
-        if (tableWidget->columnCount() < 2)
-            tableWidget->setColumnCount(2);
+        tableWidget_bat = new QTableWidget(tab);
+        if (tableWidget_bat->columnCount() < 2)
+            tableWidget_bat->setColumnCount(2);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        tableWidget_bat->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        if (tableWidget->rowCount() < 7)
-            tableWidget->setRowCount(7);
+        tableWidget_bat->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        if (tableWidget_bat->rowCount() < 7)
+            tableWidget_bat->setRowCount(7);
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(0, __qtablewidgetitem2);
+        tableWidget_bat->setVerticalHeaderItem(0, __qtablewidgetitem2);
         QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(1, __qtablewidgetitem3);
+        tableWidget_bat->setVerticalHeaderItem(1, __qtablewidgetitem3);
         QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(2, __qtablewidgetitem4);
+        tableWidget_bat->setVerticalHeaderItem(2, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(3, __qtablewidgetitem5);
+        tableWidget_bat->setVerticalHeaderItem(3, __qtablewidgetitem5);
         QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(4, __qtablewidgetitem6);
+        tableWidget_bat->setVerticalHeaderItem(4, __qtablewidgetitem6);
         QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(5, __qtablewidgetitem7);
+        tableWidget_bat->setVerticalHeaderItem(5, __qtablewidgetitem7);
         QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
-        tableWidget->setVerticalHeaderItem(6, __qtablewidgetitem8);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        tableWidget->setGeometry(QRect(60, 45, 301, 236));
+        tableWidget_bat->setVerticalHeaderItem(6, __qtablewidgetitem8);
+        tableWidget_bat->setObjectName(QStringLiteral("tableWidget_bat"));
+        tableWidget_bat->setGeometry(QRect(60, 45, 301, 236));
         groupBox = new QGroupBox(tab);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         groupBox->setGeometry(QRect(80, 455, 201, 81));
@@ -178,40 +178,38 @@ public:
         checkBox_bat1_charge = new QCheckBox(groupBox_2);
         checkBox_bat1_charge->setObjectName(QStringLiteral("checkBox_bat1_charge"));
         checkBox_bat1_charge->setGeometry(QRect(10, 30, 71, 23));
-        rtcurve_bat_v = new RealTimeCurve(Battery_1.voltage, Battery_2.voltage, tab);
+        rtcurve_bat_v = new DualCurve(Battery_1.voltage, Battery_2.voltage, tab);
         rtcurve_bat_v->setObjectName(QStringLiteral("rtcurve_bat_v"));
         rtcurve_bat_v->setGeometry(QRect(400, 40, 856, 311));
-        rtcurve_bat_t = new RealTimeCurve(Battery_1.voltage, Battery_2.voltage, tab);
+        rtcurve_bat_t = new DualCurve(Battery_1.temperature, Battery_2.temperature, tab);
         rtcurve_bat_t->setObjectName(QStringLiteral("rtcurve_bat_t"));
         rtcurve_bat_t->setGeometry(QRect(400, 360, 856, 286));
-        tabWidget->addTab(tab, QString());
+        tabWidget_bat->addTab(tab, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
-        tableWidget_2 = new QTableWidget(tab_3);
-        if (tableWidget_2->columnCount() < 1)
-            tableWidget_2->setColumnCount(1);
+        tableWidget_heater = new QTableWidget(tab_3);
+        if (tableWidget_heater->columnCount() < 1)
+            tableWidget_heater->setColumnCount(1);
         QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
-        tableWidget_2->setHorizontalHeaderItem(0, __qtablewidgetitem9);
-        if (tableWidget_2->rowCount() < 5)
-            tableWidget_2->setRowCount(5);
+        tableWidget_heater->setHorizontalHeaderItem(0, __qtablewidgetitem9);
+        if (tableWidget_heater->rowCount() < 4)
+            tableWidget_heater->setRowCount(4);
         QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
-        tableWidget_2->setVerticalHeaderItem(0, __qtablewidgetitem10);
+        tableWidget_heater->setVerticalHeaderItem(0, __qtablewidgetitem10);
         QTableWidgetItem *__qtablewidgetitem11 = new QTableWidgetItem();
-        tableWidget_2->setVerticalHeaderItem(1, __qtablewidgetitem11);
+        tableWidget_heater->setVerticalHeaderItem(1, __qtablewidgetitem11);
         QTableWidgetItem *__qtablewidgetitem12 = new QTableWidgetItem();
-        tableWidget_2->setVerticalHeaderItem(2, __qtablewidgetitem12);
+        tableWidget_heater->setVerticalHeaderItem(2, __qtablewidgetitem12);
         QTableWidgetItem *__qtablewidgetitem13 = new QTableWidgetItem();
-        tableWidget_2->setVerticalHeaderItem(3, __qtablewidgetitem13);
-        QTableWidgetItem *__qtablewidgetitem14 = new QTableWidgetItem();
-        tableWidget_2->setVerticalHeaderItem(4, __qtablewidgetitem14);
-        tableWidget_2->setObjectName(QStringLiteral("tableWidget_2"));
-        tableWidget_2->setGeometry(QRect(30, 35, 221, 176));
-        rtcurve_heater_t = new QWidget(tab_3);
+        tableWidget_heater->setVerticalHeaderItem(3, __qtablewidgetitem13);
+        tableWidget_heater->setObjectName(QStringLiteral("tableWidget_heater"));
+        tableWidget_heater->setGeometry(QRect(30, 35, 216, 146));
+        rtcurve_heater_t = new SingleCurve(Heater.temperature, 2, tab_3);
         rtcurve_heater_t->setObjectName(QStringLiteral("rtcurve_heater_t"));
         rtcurve_heater_t->setGeometry(QRect(265, 15, 996, 631));
         groupBox_3 = new QGroupBox(tab_3);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(15, 325, 191, 231));
+        groupBox_3->setGeometry(QRect(35, 195, 191, 201));
         groupBox_3->setStyleSheet(QLatin1String("QGroupBox{\n"
 "border-width:2px;\n"
 "border-style:solid;\n"
@@ -226,43 +224,40 @@ public:
 "margin-left:0px;\n"
 "padding:0 1px;\n"
 "}"));
-        pushButton_3 = new QPushButton(groupBox_3);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        pushButton_3->setGeometry(QRect(95, 195, 89, 25));
-        lineEdit_2 = new QLineEdit(groupBox_3);
-        lineEdit_2->setObjectName(QStringLiteral("lineEdit_2"));
-        lineEdit_2->setGeometry(QRect(85, 85, 71, 25));
-        lineEdit_3 = new QLineEdit(groupBox_3);
-        lineEdit_3->setObjectName(QStringLiteral("lineEdit_3"));
-        lineEdit_3->setGeometry(QRect(85, 120, 71, 25));
-        lineEdit_4 = new QLineEdit(groupBox_3);
-        lineEdit_4->setObjectName(QStringLiteral("lineEdit_4"));
-        lineEdit_4->setGeometry(QRect(85, 155, 71, 25));
+        lineEdit_heaterKp = new QLineEdit(groupBox_3);
+        lineEdit_heaterKp->setObjectName(QStringLiteral("lineEdit_heaterKp"));
+        lineEdit_heaterKp->setGeometry(QRect(90, 90, 71, 25));
+        lineEdit_heaterKi = new QLineEdit(groupBox_3);
+        lineEdit_heaterKi->setObjectName(QStringLiteral("lineEdit_heaterKi"));
+        lineEdit_heaterKi->setGeometry(QRect(90, 125, 71, 25));
+        lineEdit_heaterKd = new QLineEdit(groupBox_3);
+        lineEdit_heaterKd->setObjectName(QStringLiteral("lineEdit_heaterKd"));
+        lineEdit_heaterKd->setGeometry(QRect(90, 160, 71, 25));
         label = new QLabel(groupBox_3);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(55, 90, 26, 16));
+        label->setGeometry(QRect(60, 95, 26, 16));
         label_2 = new QLabel(groupBox_3);
         label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(55, 125, 26, 17));
+        label_2->setGeometry(QRect(60, 130, 26, 17));
         label_3 = new QLabel(groupBox_3);
         label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(55, 160, 26, 17));
-        lineEdit_5 = new QLineEdit(groupBox_3);
-        lineEdit_5->setObjectName(QStringLiteral("lineEdit_5"));
-        lineEdit_5->setGeometry(QRect(85, 50, 71, 25));
+        label_3->setGeometry(QRect(60, 165, 26, 17));
+        lineEdit_heaterSP = new QLineEdit(groupBox_3);
+        lineEdit_heaterSP->setObjectName(QStringLiteral("lineEdit_heaterSP"));
+        lineEdit_heaterSP->setGeometry(QRect(90, 55, 71, 25));
         label_6 = new QLabel(groupBox_3);
         label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setGeometry(QRect(15, 55, 66, 16));
-        radioButton = new QRadioButton(groupBox_3);
-        radioButton->setObjectName(QStringLiteral("radioButton"));
-        radioButton->setGeometry(QRect(15, 25, 41, 23));
-        radioButton_2 = new QRadioButton(groupBox_3);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
-        radioButton_2->setGeometry(QRect(65, 25, 46, 23));
-        pushButton_6 = new QPushButton(groupBox_3);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
-        pushButton_6->setGeometry(QRect(20, 195, 66, 25));
-        tabWidget->addTab(tab_3, QString());
+        label_6->setGeometry(QRect(20, 60, 66, 16));
+        radioButton_heaterOn = new QRadioButton(groupBox_3);
+        radioButton_heaterOn->setObjectName(QStringLiteral("radioButton_heaterOn"));
+        radioButton_heaterOn->setGeometry(QRect(15, 25, 41, 23));
+        radioButton_HeaterOff = new QRadioButton(groupBox_3);
+        radioButton_HeaterOff->setObjectName(QStringLiteral("radioButton_HeaterOff"));
+        radioButton_HeaterOff->setGeometry(QRect(60, 25, 46, 23));
+        pushButton_heaterUpLD = new QPushButton(groupBox_3);
+        pushButton_heaterUpLD->setObjectName(QStringLiteral("pushButton_heaterUpLD"));
+        pushButton_heaterUpLD->setGeometry(QRect(125, 25, 56, 21));
+        tabWidget_bat->addTab(tab_3, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
         pushButton = new QPushButton(tab_2);
@@ -278,7 +273,7 @@ public:
         progressBar->setObjectName(QStringLiteral("progressBar"));
         progressBar->setGeometry(QRect(35, 160, 291, 23));
         progressBar->setValue(24);
-        tabWidget->addTab(tab_2, QString());
+        tabWidget_bat->addTab(tab_2, QString());
         pushButton_4 = new QPushButton(centralWidget);
         pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
         pushButton_4->setGeometry(QRect(1200, 705, 61, 25));
@@ -299,7 +294,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget_bat->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -308,23 +303,23 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
+        QTableWidgetItem *___qtablewidgetitem = tableWidget_bat->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "battery-1", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
+        QTableWidgetItem *___qtablewidgetitem1 = tableWidget_bat->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "battery-2", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->verticalHeaderItem(0);
+        QTableWidgetItem *___qtablewidgetitem2 = tableWidget_bat->verticalHeaderItem(0);
         ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "status", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->verticalHeaderItem(1);
+        QTableWidgetItem *___qtablewidgetitem3 = tableWidget_bat->verticalHeaderItem(1);
         ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "voltage", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->verticalHeaderItem(2);
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget_bat->verticalHeaderItem(2);
         ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "current", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->verticalHeaderItem(3);
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget_bat->verticalHeaderItem(3);
         ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "temperature", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->verticalHeaderItem(4);
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget_bat->verticalHeaderItem(4);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "level", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem7 = tableWidget->verticalHeaderItem(5);
+        QTableWidgetItem *___qtablewidgetitem7 = tableWidget_bat->verticalHeaderItem(5);
         ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "capacity", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem8 = tableWidget->verticalHeaderItem(6);
+        QTableWidgetItem *___qtablewidgetitem8 = tableWidget_bat->verticalHeaderItem(6);
         ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "err code", Q_NULLPTR));
         groupBox->setTitle(QApplication::translate("MainWindow", "battery-2", Q_NULLPTR));
         label_4->setText(QApplication::translate("MainWindow", "0A", Q_NULLPTR));
@@ -334,36 +329,33 @@ public:
         label_5->setText(QApplication::translate("MainWindow", "0A", Q_NULLPTR));
         checkBox_bat1_enable->setText(QApplication::translate("MainWindow", "enable", Q_NULLPTR));
         checkBox_bat1_charge->setText(QApplication::translate("MainWindow", "charge", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "battery", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem9 = tableWidget_2->horizontalHeaderItem(0);
+        tabWidget_bat->setTabText(tabWidget_bat->indexOf(tab), QApplication::translate("MainWindow", "battery", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem9 = tableWidget_heater->horizontalHeaderItem(0);
         ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "heater1&2", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem10 = tableWidget_2->verticalHeaderItem(0);
+        QTableWidgetItem *___qtablewidgetitem10 = tableWidget_heater->verticalHeaderItem(0);
         ___qtablewidgetitem10->setText(QApplication::translate("MainWindow", "status", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem11 = tableWidget_2->verticalHeaderItem(1);
+        QTableWidgetItem *___qtablewidgetitem11 = tableWidget_heater->verticalHeaderItem(1);
         ___qtablewidgetitem11->setText(QApplication::translate("MainWindow", "temperature", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem12 = tableWidget_2->verticalHeaderItem(2);
+        QTableWidgetItem *___qtablewidgetitem12 = tableWidget_heater->verticalHeaderItem(2);
         ___qtablewidgetitem12->setText(QApplication::translate("MainWindow", "pt100 adc_code", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem13 = tableWidget_2->verticalHeaderItem(3);
-        ___qtablewidgetitem13->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem14 = tableWidget_2->verticalHeaderItem(4);
-        ___qtablewidgetitem14->setText(QApplication::translate("MainWindow", "duty cycle", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem13 = tableWidget_heater->verticalHeaderItem(3);
+        ___qtablewidgetitem13->setText(QApplication::translate("MainWindow", "duty cycle", Q_NULLPTR));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "settings", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("MainWindow", "download", Q_NULLPTR));
-        lineEdit_2->setText(QApplication::translate("MainWindow", "Kp", Q_NULLPTR));
-        lineEdit_3->setText(QApplication::translate("MainWindow", "Ki", Q_NULLPTR));
-        lineEdit_4->setText(QApplication::translate("MainWindow", "Kd", Q_NULLPTR));
+        lineEdit_heaterKp->setText(QApplication::translate("MainWindow", "Kp", Q_NULLPTR));
+        lineEdit_heaterKi->setText(QApplication::translate("MainWindow", "Ki", Q_NULLPTR));
+        lineEdit_heaterKd->setText(QApplication::translate("MainWindow", "Kd", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "Kp", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "Ki", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWindow", "Kd", Q_NULLPTR));
-        lineEdit_5->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
+        lineEdit_heaterSP->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
         label_6->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
-        radioButton->setText(QApplication::translate("MainWindow", "on", Q_NULLPTR));
-        radioButton_2->setText(QApplication::translate("MainWindow", "off", Q_NULLPTR));
-        pushButton_6->setText(QApplication::translate("MainWindow", "upload", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "heater", Q_NULLPTR));
+        radioButton_heaterOn->setText(QApplication::translate("MainWindow", "on", Q_NULLPTR));
+        radioButton_HeaterOff->setText(QApplication::translate("MainWindow", "off", Q_NULLPTR));
+        pushButton_heaterUpLD->setText(QApplication::translate("MainWindow", "upload", Q_NULLPTR));
+        tabWidget_bat->setTabText(tabWidget_bat->indexOf(tab_3), QApplication::translate("MainWindow", "heater", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "browse file", Q_NULLPTR));
         pushButton_2->setText(QApplication::translate("MainWindow", "update start", Q_NULLPTR));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "fw update", Q_NULLPTR));
+        tabWidget_bat->setTabText(tabWidget_bat->indexOf(tab_2), QApplication::translate("MainWindow", "fw update", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("MainWindow", "exit", Q_NULLPTR));
         pushButton_5->setText(QApplication::translate("MainWindow", "reset", Q_NULLPTR));
     } // retranslateUi

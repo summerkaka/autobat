@@ -1,5 +1,5 @@
-#ifndef REALTIMECURVE_H
-#define REALTIMECURVE_H
+#ifndef DUALCURVE_H
+#define DUALCURVE_H
 
 #include <QWidget>
 #include <QList>
@@ -8,22 +8,21 @@
 #include <QValueAxis>
 #include <QChart>
 #include <QChartView>
-#include "realtimecurve.h"
 
 #define SAMPLE_INTERVAL 5   // unit: s
 
 using namespace QtCharts;
 
-class RealTimeCurve : public QWidget
+class DualCurve : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RealTimeCurve(float &newdat1,
+    explicit DualCurve(float &newdat1,
                            float &newdat2,
                            QWidget *parent = nullptr,
                            const QString &tittle = "实时动态曲线");
-    ~RealTimeCurve();
-    void Config(float &data1, float &data2, const QString &title = "实时动态曲线", int16_t sample_interval = 5000);
+    ~DualCurve();
+//    void Config(float &data1, float &data2, const QString &title = "实时动态曲线", int16_t sample_interval = 5000);
 
 protected:
     void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
@@ -50,4 +49,4 @@ public slots:
 
 
 
-#endif // REALTIMECURVE_H
+#endif // DUALCURVE_H
