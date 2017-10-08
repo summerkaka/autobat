@@ -31,6 +31,7 @@ SOURCES += \
     gpio.cpp \
     can_app.cpp \
     dualcurve.cpp \
+    lineeditor.cpp \
     singlecurve.cpp
 
 HEADERS += \
@@ -43,6 +44,7 @@ HEADERS += \
     main.h \
     can_app.h \
     dualcurve.h \
+    lineeditor.h \
     singlecurve.h
 
 FORMS += \

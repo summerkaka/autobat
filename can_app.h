@@ -20,9 +20,30 @@
 #define CMD_PROGRAM_START   0xae
 #define CMD_PROGRAM_END     0xaf
 
-#define CMD_RD_ZONE     0x63
-#define CMD_WR_ZONE     0x64
-#define CMD_WRITE_SP    0x98
+#define CMD_READ_AIO        0x61
+#define CMD_RD_ZONE         0x63
+#define CMD_WR_ZONE         0x64
+#define	CMD_READ_ID         0x80
+#define	CMD_READ_DIO        0x87
+#define	CMD_WRITE_DIO       0x88
+#define CMD_WRITE_SP        0x98
+
+// DIO mask macro
+#define BLOCK_A	0x01
+#define BLOCK_B	0x02
+// BLOCK A
+#define DIO_ADAPTOR_SUPPLY	0x01
+#define DIO_BAT1_SUPPLY		0x02
+#define DIO_BAT2_SUPPLY		0x04
+#define DIO_FAN				0x08
+#define DIO_HEATER			0x10
+#define	DIO_BAT1_CHARGE		0x20
+#define DIO_BAT2_CHARGE		0x40
+// BLOCK B
+#define DIO_VALVE1_SW		0x01
+#define DIO_VALVE1_PWR		0x02
+#define DIO_VALVE2_SW		0x04
+#define DIO_VALVE2_PWR		0x08
 
 #define GetLongH(ptr)   (uint32_t)*(uint8_t *)(ptr) << 24 | \
                         (uint32_t)*((uint8_t *)(ptr) + 1) << 16 | \
@@ -141,7 +162,6 @@ extern stHeater Heater;
 
 void* CAN_Listen(void *para);
 void* CAN_Poll(void *interval);
-void* UpdateUi(void *para);
-void SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, uint8_t dlc);
+int SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, uint8_t dlc);
 
 #endif // CAN_APP_H

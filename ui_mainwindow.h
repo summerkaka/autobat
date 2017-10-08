@@ -29,9 +29,8 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
-#include <singlecurve.h>
 #include "dualcurve.h"
-#include "can_app.h"
+#include "singlecurve.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -58,17 +57,16 @@ public:
     QTableWidget *tableWidget_heater;
     SingleCurve *rtcurve_heater_t;
     QGroupBox *groupBox_3;
-    QLineEdit *lineEdit_heaterKp;
-    QLineEdit *lineEdit_heaterKi;
-    QLineEdit *lineEdit_heaterKd;
     QLabel *label;
     QLabel *label_2;
     QLabel *label_3;
-    QLineEdit *lineEdit_heaterSP;
     QLabel *label_6;
     QRadioButton *radioButton_heaterOn;
-    QRadioButton *radioButton_HeaterOff;
-    QPushButton *pushButton_heaterUpLD;
+    QRadioButton *radioButton_heaterOff;
+    QLineEdit *lineEdit_heaterSP;
+    QLineEdit *lineEdit_heaterKp;
+    QLineEdit *lineEdit_heaterKi;
+    QLineEdit *lineEdit_heaterKd;
     QWidget *tab_2;
     QPushButton *pushButton;
     QLineEdit *lineEdit;
@@ -178,10 +176,10 @@ public:
         checkBox_bat1_charge = new QCheckBox(groupBox_2);
         checkBox_bat1_charge->setObjectName(QStringLiteral("checkBox_bat1_charge"));
         checkBox_bat1_charge->setGeometry(QRect(10, 30, 71, 23));
-        rtcurve_bat_v = new DualCurve(Battery_1.voltage, Battery_2.voltage, tab);
+        rtcurve_bat_v = new DualCurve(tab);
         rtcurve_bat_v->setObjectName(QStringLiteral("rtcurve_bat_v"));
         rtcurve_bat_v->setGeometry(QRect(400, 40, 856, 311));
-        rtcurve_bat_t = new DualCurve(Battery_1.temperature, Battery_2.temperature, tab);
+        rtcurve_bat_t = new DualCurve(tab);
         rtcurve_bat_t->setObjectName(QStringLiteral("rtcurve_bat_t"));
         rtcurve_bat_t->setGeometry(QRect(400, 360, 856, 286));
         tabWidget_bat->addTab(tab, QString());
@@ -192,8 +190,8 @@ public:
             tableWidget_heater->setColumnCount(1);
         QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
         tableWidget_heater->setHorizontalHeaderItem(0, __qtablewidgetitem9);
-        if (tableWidget_heater->rowCount() < 4)
-            tableWidget_heater->setRowCount(4);
+        if (tableWidget_heater->rowCount() < 8)
+            tableWidget_heater->setRowCount(8);
         QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
         tableWidget_heater->setVerticalHeaderItem(0, __qtablewidgetitem10);
         QTableWidgetItem *__qtablewidgetitem11 = new QTableWidgetItem();
@@ -202,14 +200,22 @@ public:
         tableWidget_heater->setVerticalHeaderItem(2, __qtablewidgetitem12);
         QTableWidgetItem *__qtablewidgetitem13 = new QTableWidgetItem();
         tableWidget_heater->setVerticalHeaderItem(3, __qtablewidgetitem13);
+        QTableWidgetItem *__qtablewidgetitem14 = new QTableWidgetItem();
+        tableWidget_heater->setVerticalHeaderItem(4, __qtablewidgetitem14);
+        QTableWidgetItem *__qtablewidgetitem15 = new QTableWidgetItem();
+        tableWidget_heater->setVerticalHeaderItem(5, __qtablewidgetitem15);
+        QTableWidgetItem *__qtablewidgetitem16 = new QTableWidgetItem();
+        tableWidget_heater->setVerticalHeaderItem(6, __qtablewidgetitem16);
+        QTableWidgetItem *__qtablewidgetitem17 = new QTableWidgetItem();
+        tableWidget_heater->setVerticalHeaderItem(7, __qtablewidgetitem17);
         tableWidget_heater->setObjectName(QStringLiteral("tableWidget_heater"));
-        tableWidget_heater->setGeometry(QRect(30, 35, 216, 146));
-        rtcurve_heater_t = new SingleCurve(Heater.temperature, 2, tab_3);
+        tableWidget_heater->setGeometry(QRect(30, 35, 216, 266));
+        rtcurve_heater_t = new SingleCurve(tab_3);
         rtcurve_heater_t->setObjectName(QStringLiteral("rtcurve_heater_t"));
         rtcurve_heater_t->setGeometry(QRect(265, 15, 996, 631));
         groupBox_3 = new QGroupBox(tab_3);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(35, 195, 191, 201));
+        groupBox_3->setGeometry(QRect(35, 330, 191, 201));
         groupBox_3->setStyleSheet(QLatin1String("QGroupBox{\n"
 "border-width:2px;\n"
 "border-style:solid;\n"
@@ -224,15 +230,6 @@ public:
 "margin-left:0px;\n"
 "padding:0 1px;\n"
 "}"));
-        lineEdit_heaterKp = new QLineEdit(groupBox_3);
-        lineEdit_heaterKp->setObjectName(QStringLiteral("lineEdit_heaterKp"));
-        lineEdit_heaterKp->setGeometry(QRect(90, 90, 71, 25));
-        lineEdit_heaterKi = new QLineEdit(groupBox_3);
-        lineEdit_heaterKi->setObjectName(QStringLiteral("lineEdit_heaterKi"));
-        lineEdit_heaterKi->setGeometry(QRect(90, 125, 71, 25));
-        lineEdit_heaterKd = new QLineEdit(groupBox_3);
-        lineEdit_heaterKd->setObjectName(QStringLiteral("lineEdit_heaterKd"));
-        lineEdit_heaterKd->setGeometry(QRect(90, 160, 71, 25));
         label = new QLabel(groupBox_3);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(60, 95, 26, 16));
@@ -242,21 +239,27 @@ public:
         label_3 = new QLabel(groupBox_3);
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setGeometry(QRect(60, 165, 26, 17));
-        lineEdit_heaterSP = new QLineEdit(groupBox_3);
-        lineEdit_heaterSP->setObjectName(QStringLiteral("lineEdit_heaterSP"));
-        lineEdit_heaterSP->setGeometry(QRect(90, 55, 71, 25));
         label_6 = new QLabel(groupBox_3);
         label_6->setObjectName(QStringLiteral("label_6"));
         label_6->setGeometry(QRect(20, 60, 66, 16));
         radioButton_heaterOn = new QRadioButton(groupBox_3);
         radioButton_heaterOn->setObjectName(QStringLiteral("radioButton_heaterOn"));
         radioButton_heaterOn->setGeometry(QRect(15, 25, 41, 23));
-        radioButton_HeaterOff = new QRadioButton(groupBox_3);
-        radioButton_HeaterOff->setObjectName(QStringLiteral("radioButton_HeaterOff"));
-        radioButton_HeaterOff->setGeometry(QRect(60, 25, 46, 23));
-        pushButton_heaterUpLD = new QPushButton(groupBox_3);
-        pushButton_heaterUpLD->setObjectName(QStringLiteral("pushButton_heaterUpLD"));
-        pushButton_heaterUpLD->setGeometry(QRect(125, 25, 56, 21));
+        radioButton_heaterOff = new QRadioButton(groupBox_3);
+        radioButton_heaterOff->setObjectName(QStringLiteral("radioButton_heaterOff"));
+        radioButton_heaterOff->setGeometry(QRect(60, 25, 46, 23));
+        lineEdit_heaterSP = new QLineEdit(groupBox_3);
+        lineEdit_heaterSP->setObjectName(QStringLiteral("lineEdit_heaterSP"));
+        lineEdit_heaterSP->setGeometry(QRect(90, 55, 91, 25));
+        lineEdit_heaterKp = new QLineEdit(groupBox_3);
+        lineEdit_heaterKp->setObjectName(QStringLiteral("lineEdit_heaterKp"));
+        lineEdit_heaterKp->setGeometry(QRect(90, 90, 91, 25));
+        lineEdit_heaterKi = new QLineEdit(groupBox_3);
+        lineEdit_heaterKi->setObjectName(QStringLiteral("lineEdit_heaterKi"));
+        lineEdit_heaterKi->setGeometry(QRect(90, 125, 91, 25));
+        lineEdit_heaterKd = new QLineEdit(groupBox_3);
+        lineEdit_heaterKd->setObjectName(QStringLiteral("lineEdit_heaterKd"));
+        lineEdit_heaterKd->setGeometry(QRect(90, 160, 91, 25));
         tabWidget_bat->addTab(tab_3, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
@@ -294,7 +297,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget_bat->setCurrentIndex(0);
+        tabWidget_bat->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -331,7 +334,7 @@ public:
         checkBox_bat1_charge->setText(QApplication::translate("MainWindow", "charge", Q_NULLPTR));
         tabWidget_bat->setTabText(tabWidget_bat->indexOf(tab), QApplication::translate("MainWindow", "battery", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem9 = tableWidget_heater->horizontalHeaderItem(0);
-        ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "heater1&2", Q_NULLPTR));
+        ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "heater", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem10 = tableWidget_heater->verticalHeaderItem(0);
         ___qtablewidgetitem10->setText(QApplication::translate("MainWindow", "status", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem11 = tableWidget_heater->verticalHeaderItem(1);
@@ -340,18 +343,21 @@ public:
         ___qtablewidgetitem12->setText(QApplication::translate("MainWindow", "pt100 adc_code", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem13 = tableWidget_heater->verticalHeaderItem(3);
         ___qtablewidgetitem13->setText(QApplication::translate("MainWindow", "duty cycle", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem14 = tableWidget_heater->verticalHeaderItem(4);
+        ___qtablewidgetitem14->setText(QApplication::translate("MainWindow", "setpoint", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem15 = tableWidget_heater->verticalHeaderItem(5);
+        ___qtablewidgetitem15->setText(QApplication::translate("MainWindow", "kp", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem16 = tableWidget_heater->verticalHeaderItem(6);
+        ___qtablewidgetitem16->setText(QApplication::translate("MainWindow", "ki", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem17 = tableWidget_heater->verticalHeaderItem(7);
+        ___qtablewidgetitem17->setText(QApplication::translate("MainWindow", "kd", Q_NULLPTR));
         groupBox_3->setTitle(QApplication::translate("MainWindow", "settings", Q_NULLPTR));
-        lineEdit_heaterKp->setText(QApplication::translate("MainWindow", "Kp", Q_NULLPTR));
-        lineEdit_heaterKi->setText(QApplication::translate("MainWindow", "Ki", Q_NULLPTR));
-        lineEdit_heaterKd->setText(QApplication::translate("MainWindow", "Kd", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "Kp", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "Ki", Q_NULLPTR));
         label_3->setText(QApplication::translate("MainWindow", "Kd", Q_NULLPTR));
-        lineEdit_heaterSP->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
         label_6->setText(QApplication::translate("MainWindow", "set point", Q_NULLPTR));
         radioButton_heaterOn->setText(QApplication::translate("MainWindow", "on", Q_NULLPTR));
-        radioButton_HeaterOff->setText(QApplication::translate("MainWindow", "off", Q_NULLPTR));
-        pushButton_heaterUpLD->setText(QApplication::translate("MainWindow", "upload", Q_NULLPTR));
+        radioButton_heaterOff->setText(QApplication::translate("MainWindow", "off", Q_NULLPTR));
         tabWidget_bat->setTabText(tabWidget_bat->indexOf(tab_3), QApplication::translate("MainWindow", "heater", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "browse file", Q_NULLPTR));
         pushButton_2->setText(QApplication::translate("MainWindow", "update start", Q_NULLPTR));

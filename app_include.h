@@ -30,6 +30,7 @@ extern "C" {
 
 #include "libsocketcan.h"
 #include "main.h"
+#include "can_app.h"
 
 #define USE_QTGUI  0
 #define ZC702
@@ -37,7 +38,6 @@ extern "C" {
 
 //#define HMBIRD_MB
 
-extern pthread_rwlock_t lock_canpool;
 extern sem_t sem_display;
 extern int fd_cansocket;
 

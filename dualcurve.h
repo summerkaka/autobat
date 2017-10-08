@@ -17,12 +17,10 @@ class DualCurve : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DualCurve(float &newdat1,
-                           float &newdat2,
-                           QWidget *parent = nullptr,
-                           const QString &tittle = "实时动态曲线");
+    explicit DualCurve(QWidget *parent = nullptr,
+                       const QString &tittle = "nocurve");
     ~DualCurve();
-//    void Config(float &data1, float &data2, const QString &title = "实时动态曲线", int16_t sample_interval = 5000);
+    void Config(float *data1, float *data2, const QString &title = "real-time curve", int16_t sample_interval = SAMPLE_INTERVAL);
 
 protected:
     void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
@@ -30,9 +28,8 @@ protected:
 private:
     int timerId;
     float y_max = 0, y_min = 0;
-    float &newdata1;
-    float &newdata2;
-    QString chart_tittle;
+    float *newdata1 = nullptr;
+    float *newdata2 = nullptr;
     QList<double> data1, data2; // 存储业务数据的 list
     QChart *chart;
     QChartView *chartView;

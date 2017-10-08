@@ -15,12 +15,10 @@ class SingleCurve : public QWidget
 {
     Q_OBJECT
 public:
-    explicit SingleCurve(float &newdat1,
-                         uint8_t sample_time = 2,
-                         QWidget *parent = nullptr,
-                         const QString &tittle = "实时动态曲线");
+    explicit SingleCurve(QWidget *parent = nullptr,
+                         const QString &tittle = "nocurve");
     ~SingleCurve();
-//    void Config(float &data1, float &data2, const QString &title = "实时动态曲线", int16_t sample_interval = 5000);
+    void Config(float *data1, const QString &title = "realtime curve", int16_t sample_interval = 5);
 
 protected:
     void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
@@ -28,8 +26,7 @@ protected:
 private:
     int timerId;
     float y_max = 0, y_min = 0;
-    float &newdata1;
-    QString chart_tittle;
+    float *newdata1 = nullptr;
     QList<double> data1; // 存储业务数据的 list
     QChart *chart;
     QChartView *chartView;

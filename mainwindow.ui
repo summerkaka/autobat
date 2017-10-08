@@ -30,7 +30,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -284,7 +284,7 @@ padding:0 1px;
         <x>30</x>
         <y>35</y>
         <width>216</width>
-        <height>146</height>
+        <height>266</height>
        </rect>
       </property>
       <row>
@@ -307,9 +307,29 @@ padding:0 1px;
         <string>duty cycle</string>
        </property>
       </row>
+      <row>
+       <property name="text">
+        <string>setpoint</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>kp</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>ki</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>kd</string>
+       </property>
+      </row>
       <column>
        <property name="text">
-        <string>heater1&amp;2</string>
+        <string>heater</string>
        </property>
       </column>
      </widget>
@@ -327,7 +347,7 @@ padding:0 1px;
       <property name="geometry">
        <rect>
         <x>35</x>
-        <y>195</y>
+        <y>330</y>
         <width>191</width>
         <height>201</height>
        </rect>
@@ -351,45 +371,6 @@ padding:0 1px;
       <property name="title">
        <string>settings</string>
       </property>
-      <widget class="QLineEdit" name="lineEdit_heaterKp">
-       <property name="geometry">
-        <rect>
-         <x>90</x>
-         <y>90</y>
-         <width>71</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Kp</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEdit_heaterKi">
-       <property name="geometry">
-        <rect>
-         <x>90</x>
-         <y>125</y>
-         <width>71</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Ki</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="lineEdit_heaterKd">
-       <property name="geometry">
-        <rect>
-         <x>90</x>
-         <y>160</y>
-         <width>71</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Kd</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label">
        <property name="geometry">
         <rect>
@@ -429,19 +410,6 @@ padding:0 1px;
         <string>Kd</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_heaterSP">
-       <property name="geometry">
-        <rect>
-         <x>90</x>
-         <y>55</y>
-         <width>71</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>set point</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
         <rect>
@@ -468,7 +436,7 @@ padding:0 1px;
         <string>on</string>
        </property>
       </widget>
-      <widget class="QRadioButton" name="radioButton_HeaterOff">
+      <widget class="QRadioButton" name="radioButton_heaterOff">
        <property name="geometry">
         <rect>
          <x>60</x>
@@ -481,17 +449,44 @@ padding:0 1px;
         <string>off</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_heaterUpLD">
+      <widget class="QLineEdit" name="lineEdit_heaterSP">
        <property name="geometry">
         <rect>
-         <x>125</x>
-         <y>25</y>
-         <width>56</width>
-         <height>21</height>
+         <x>90</x>
+         <y>55</y>
+         <width>91</width>
+         <height>25</height>
         </rect>
        </property>
-       <property name="text">
-        <string>upload</string>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_heaterKp">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>90</y>
+         <width>91</width>
+         <height>25</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_heaterKi">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>125</y>
+         <width>91</width>
+         <height>25</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEdit_heaterKd">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>160</y>
+         <width>91</width>
+         <height>25</height>
+        </rect>
        </property>
       </widget>
      </widget>
@@ -609,7 +604,7 @@ padding:0 1px;
   <customwidget>
    <class>SingleCurve</class>
    <extends>QWidget</extends>
-   <header location="global">singlecurve.h</header>
+   <header>singlecurve.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

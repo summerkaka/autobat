@@ -5,24 +5,19 @@
 #define MAXSIZE 181      // 只存储最新的 51 个数据
 #define MAXVALUE 100    // 数据的最大值为 100，因为我们生成的随机数为 [0, 100]
 
-DualCurve::DualCurve(float &newd1, float &newd2, QWidget *parent, const QString &tittle) :
-    QWidget(parent),
-    newdata1(newd1),
-    newdata2(newd2),
-    chart_tittle(tittle)
+DualCurve::DualCurve(QWidget *parent, const QString &tittlea) :
+    QWidget(parent)
 {
     y_max = 0;
     y_min = 0;
-//    newdata1 = data1;
-//    newdata2 = data2;
     timerId = startTimer(SAMPLE_INTERVAL * 1000);
     qsrand(QDateTime::currentDateTime().toTime_t());
     curve1 = new QSplineSeries();
     curve2 = new QSplineSeries();
     scatter1 = new QScatterSeries();
-    scatter1->setMarkerSize(8);
+    scatter1->setMarkerSize(5);
     scatter2= new QScatterSeries();
-    scatter2->setMarkerSize(8);
+    scatter2->setMarkerSize(5);
     // 预先分配坐标，这样在 dataReceived 中直接替换坐标了
     for (int i = 0; i < MAXSIZE; ++i) {
         curve1->append(i, -10);
@@ -38,7 +33,7 @@ DualCurve::DualCurve(float &newd1, float &newd2, QWidget *parent, const QString 
     chart->addSeries(scatter1);
     chart->addSeries(scatter2);
     chart->legend()->hide();
-    chart->setTitle(chart_tittle);
+    chart->setTitle(tittlea);
     chart->createDefaultAxes();
     chart->axisY()->setRange(0+25, MAXVALUE-25);
     chartView = new QChartView(chart);
@@ -56,28 +51,30 @@ void DualCurve::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == timerId) {
         // 模拟不停的接收到新数据
-//        int newData = qrand() % (MAXVALUE + 1);
-//        int newData2 = qrand() % (MAXVALUE + 1);
-        y_max = y_max > newdata1 ? y_max : newdata1;
-        y_max = y_max > newdata2 ? y_max : newdata2;
-        y_min = y_min < newdata1 ? y_min : newdata1;
-        y_min = y_min < newdata2 ? y_min : newdata2;
+        y_max = y_max > *newdata1 ? y_max : *newdata1;
+        y_max = y_max > *newdata2 ? y_max : *newdata2;
+        y_min = y_min < *newdata1 ? y_min : *newdata1;
+        y_min = y_min < *newdata2 ? y_min : *newdata2;
         updateCurve();
     }
 }
 
-//void DualCurve::Config(float &data1, float &data2, const QString &title, int16_t sample_interval)
-//{
-//    newdata1 = data1;
-//    newdata2 = data2;
-//    chart->setTitle(title);
-//    timerId = startTimer(sample_interval);
-//}
+void DualCurve::Config(float *data1, float *data2, const QString &title, int16_t sample_interval)
+{
+    newdata1 = data1;
+    newdata2 = data2;
+    chart->setTitle(title);
+    killTimer(timerId);
+    timerId = startTimer(sample_interval * 1000);
+}
 
 void DualCurve::updateCurve(void)
 {
-    data1 << newdata1;
-    data2 << newdata2;
+    if (newdata1 == nullptr || newdata2 == nullptr)
+        return;
+
+    data1 << *newdata1;
+    data2 << *newdata2;
     // 数据个数超过了指定值，则删除最先接收到的数据，实现曲线向前移动
     while (data1.size() > MAXSIZE) {
         data1.removeFirst();
@@ -100,7 +97,6 @@ void DualCurve::updateCurve(void)
             scatter2->replace(delta2+i, scatter2->at(delta2+i).x(), data2.at(i));
         }
     }
-//    return (void *)0;
 }
 
 
