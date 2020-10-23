@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>960</height>
+    <width>1440</width>
+    <height>911</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QTabWidget" name="tabWidget_bat">
     <property name="geometry">
      <rect>
-      <x>5</x>
-      <y>5</y>
-      <width>1271</width>
-      <height>901</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1600</width>
+      <height>861</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -30,7 +30,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -41,8 +41,8 @@
        <rect>
         <x>5</x>
         <y>10</y>
-        <width>331</width>
-        <height>636</height>
+        <width>291</width>
+        <height>706</height>
        </rect>
       </property>
       <row>
@@ -112,7 +112,7 @@
       </row>
       <row>
        <property name="text">
-        <string>charge_finish_time</string>
+        <string>finish_time</string>
        </property>
       </row>
       <row>
@@ -132,7 +132,7 @@
       </row>
       <row>
        <property name="text">
-        <string>ocv</string>
+        <string>ng</string>
        </property>
       </row>
       <row>
@@ -147,7 +147,22 @@
       </row>
       <row>
        <property name="text">
-        <string>reserved</string>
+        <string>level_top</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>level_bottom</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>l_transition</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>h_transition</string>
        </property>
       </row>
       <row>
@@ -189,10 +204,10 @@
      <widget class="QGroupBox" name="groupBox">
       <property name="geometry">
        <rect>
-        <x>175</x>
-        <y>650</y>
+        <x>155</x>
+        <y>720</y>
         <width>141</width>
-        <height>66</height>
+        <height>111</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -271,9 +286,9 @@ padding:0 1px;
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>650</y>
+        <y>720</y>
         <width>141</width>
-        <height>66</height>
+        <height>111</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -348,78 +363,38 @@ padding:0 1px;
        </property>
       </widget>
      </widget>
-     <widget class="SingleCurve" name="rtcurve_bat1_v" native="true">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>10</y>
-        <width>916</width>
-        <height>201</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="SingleCurve" name="rtcurve_bat1_t" native="true">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>220</y>
-        <width>916</width>
-        <height>201</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="SingleCurve" name="rtcurve_bat2_v" native="true">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>430</y>
-        <width>916</width>
-        <height>201</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="SingleCurve" name="rtcurve_bat2_t" native="true">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>640</y>
-        <width>916</width>
-        <height>201</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>935</x>
-        <y>845</y>
-        <width>191</width>
-        <height>25</height>
+        <x>1230</x>
+        <y>810</y>
+        <width>320</width>
+        <height>26</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="pushButton_reset1">
-         <property name="text">
-          <string>reset1</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_reset2">
-         <property name="text">
-          <string>reset2</string>
-         </property>
-        </widget>
-       </item>
-       <item>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="2">
         <widget class="QPushButton" name="pushButton_reset3">
          <property name="text">
           <string>reset3</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButton_reset1">
+         <property name="text">
+          <string>reset1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_reset2">
+         <property name="text">
+          <string>reset2</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
         <widget class="QPushButton" name="pushButton_reset4">
          <property name="text">
           <string>reset4</string>
@@ -428,81 +403,301 @@ padding:0 1px;
        </item>
       </layout>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>heater</string>
-     </attribute>
-     <widget class="QTableWidget" name="tableWidget_heater">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>35</y>
-        <width>201</width>
-        <height>271</height>
+        <x>301</x>
+        <y>11</y>
+        <width>1136</width>
+        <height>796</height>
        </rect>
       </property>
-      <row>
-       <property name="text">
-        <string>status</string>
+      <layout class="QGridLayout" name="gridLayout_rtcurve_bat">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetNoConstraint</enum>
        </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>temperature</string>
+       <property name="spacing">
+        <number>0</number>
        </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>pt100 adc_code</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>duty cycle</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>setpoint</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>kp</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>ki</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>kd</string>
-       </property>
-      </row>
-      <column>
-       <property name="text">
-        <string>heater1&amp;2</string>
-       </property>
-      </column>
+       <item row="0" column="0">
+        <widget class="SingleCurve" name="rtcurve_bat1_v" native="true"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="SingleCurve" name="rtcurve_bat2_t" native="true"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="SingleCurve" name="rtcurve_bat1_t" native="true"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="SingleCurve" name="rtcurve_bat2_v" native="true"/>
+       </item>
+      </layout>
      </widget>
-     <widget class="SingleCurve" name="rtcurve_heater_t" native="true">
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>fieldcase</string>
+     </attribute>
+     <widget class="QGroupBox" name="groupBox_4">
       <property name="geometry">
        <rect>
-        <x>265</x>
-        <y>15</y>
-        <width>996</width>
-        <height>631</height>
+        <x>365</x>
+        <y>25</y>
+        <width>456</width>
+        <height>176</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QGroupBox{
+border-width:2px;
+border-style:solid;
+border-radius: 10px;
+border-color:gray;
+margin-top:1ex;
+}
+QGroupBox::title{
+subcontrol-origin:margin;
+subcontrol-position:top left;
+left:10px;
+margin-left:0px;
+padding:0 1px;
+}</string>
+      </property>
+      <property name="title">
+       <string>monitor</string>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>85</y>
+         <width>426</width>
+         <height>80</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_19">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>V_Adaptor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_vAdaptor">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QLabel" name="label_12">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>covered time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QLineEdit" name="lineEdit_coverTime">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_18">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>V_syspwr</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_vUGC">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="label_16">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>switchon time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLineEdit" name="lineEdit_swOnTime">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_20">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>GC status</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="lineEdit_gc_sts">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLabel" name="label_17">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>switchoff time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QLineEdit" name="lineEdit_swOffTime">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>15</x>
+         <y>25</y>
+         <width>406</width>
+         <height>48</height>
+        </rect>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>gas 1 pressure:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_gas1"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QCheckBox" name="checkBox_adaptor">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Adaptor</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QCheckBox" name="checkBox_lid">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>covered</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>gas 2 pressure:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_gas2"/>
+        </item>
+        <item row="1" column="3">
+         <widget class="QCheckBox" name="checkBox_powerButton">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>powerButton</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>355</y>
+        <x>50</x>
+        <y>565</y>
         <width>181</width>
         <height>226</height>
        </rect>
@@ -510,6 +705,9 @@ padding:0 1px;
       <property name="font">
        <font>
         <pointsize>10</pointsize>
+        <weight>75</weight>
+        <italic>true</italic>
+        <bold>true</bold>
         <kerning>false</kerning>
        </font>
       </property>
@@ -530,7 +728,7 @@ padding:0 1px;
 }</string>
       </property>
       <property name="title">
-       <string>Settings</string>
+       <string>Heater Settings</string>
       </property>
       <widget class="QComboBox" name="comboBox_heater">
        <property name="geometry">
@@ -562,7 +760,7 @@ padding:0 1px;
         </property>
        </item>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget_3">
        <property name="geometry">
         <rect>
          <x>16</x>
@@ -670,18 +868,78 @@ padding:0 1px;
        </layout>
       </widget>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>fieldcase</string>
-     </attribute>
-     <widget class="QGroupBox" name="groupBox_4">
+     <widget class="QTableWidget" name="tableWidget_heater">
       <property name="geometry">
        <rect>
-        <x>45</x>
-        <y>190</y>
-        <width>206</width>
-        <height>86</height>
+        <x>50</x>
+        <y>270</y>
+        <width>201</width>
+        <height>271</height>
+       </rect>
+      </property>
+      <row>
+       <property name="text">
+        <string>status</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>temperature</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>pt100 adc_code</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>duty cycle</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>setpoint</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>kp</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>ki</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>kd</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>Heater Monitor</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="SingleCurve" name="rtcurve_heater_t" native="true">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>270</y>
+        <width>671</width>
+        <height>406</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="geometry">
+       <rect>
+        <x>35</x>
+        <y>25</y>
+        <width>296</width>
+        <height>176</height>
        </rect>
       </property>
       <property name="font">
@@ -708,117 +966,123 @@ padding:0 1px;
 }</string>
       </property>
       <property name="title">
-       <string>Gas Pressure</string>
+       <string>settings</string>
       </property>
-      <widget class="QWidget" name="layoutWidget_2">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>181</width>
-         <height>48</height>
+         <x>15</x>
+         <y>30</y>
+         <width>264</width>
+         <height>121</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout">
+        <item row="3" column="1">
+         <widget class="QLineEdit" name="lineEdit_lidCloseSleepSetting">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_9">
+         <widget class="QCheckBox" name="checkBox_fan">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>gas 1 pressure:</string>
+           <string>Fan</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_gas1"/>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="checkBox_valve2">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Valve 2</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_10">
+         <widget class="QCheckBox" name="checkBox_valve1">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
            </font>
           </property>
           <property name="text">
-           <string>gas 2 pressure:</string>
+           <string>Valve 1</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_gas2"/>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_13">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>lid closed sleep time:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lineEdit_swOffSleepSetting">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_14">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>switchoff  sleep time:</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
      </widget>
-     <widget class="QWidget" name="layoutWidget">
+     <widget class="QWidget" name="">
       <property name="geometry">
        <rect>
-        <x>205</x>
+        <x>851</x>
         <y>35</y>
-        <width>264</width>
-        <height>80</height>
+        <width>238</width>
+        <height>24</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_12">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label_15">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>covered time:</string>
+          <string>runtime (minute)</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_4">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_13">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>lid closed sleep time:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_2">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_14">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>switchoff  sleep time:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_3">
+       <item>
+        <widget class="QLineEdit" name="lineEdit_runtime">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
@@ -828,126 +1092,15 @@ padding:0 1px;
        </item>
       </layout>
      </widget>
-     <widget class="QCheckBox" name="checkBox_valve2">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>140</y>
-        <width>76</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Valve 2</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_lid">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>36</y>
-        <width>76</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>covered</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_adaptor">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>78</y>
-        <width>76</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Adaptor</string>
-      </property>
-      <property name="checkable">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_powerButton">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>57</y>
-        <width>96</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>powerButton</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_valve1">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>119</y>
-        <width>76</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Valve 1</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="checkBox_fan">
-      <property name="geometry">
-       <rect>
-        <x>51</x>
-        <y>98</y>
-        <width>76</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Fan</string>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
       <string>system</string>
      </attribute>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="pushButton_fwPath">
       <property name="geometry">
        <rect>
-        <x>475</x>
+        <x>505</x>
         <y>25</y>
         <width>96</width>
         <height>25</height>
@@ -957,7 +1110,7 @@ padding:0 1px;
        <string>browse file</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="lineEdit_fwPath">
       <property name="geometry">
        <rect>
         <x>270</x>
@@ -967,10 +1120,10 @@ padding:0 1px;
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButton_fwUpdate">
       <property name="geometry">
        <rect>
-        <x>475</x>
+        <x>505</x>
         <y>65</y>
         <width>96</width>
         <height>25</height>
@@ -984,8 +1137,8 @@ padding:0 1px;
       <property name="geometry">
        <rect>
         <x>270</x>
-        <y>100</y>
-        <width>291</width>
+        <y>65</y>
+        <width>226</width>
         <height>23</height>
        </rect>
       </property>
@@ -1118,7 +1271,7 @@ padding:0 1px;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1280</width>
+     <width>1440</width>
      <height>21</height>
     </rect>
    </property>

@@ -1,13 +1,17 @@
 #include "mainwindow.h"
 
-#define POOL_NUM 32
-#define POLL_NUM 2
+#define BAT_ITEM_NUM    0x19
+#define HEATER_ITEM_NUM 0x08
+#define FC_ITEM_NUM     0x0a
 
 stBattery Battery_1;
 stBattery Battery_2;
 stHeater Heater;
 stAdaptor Adaptor;
-stFieldCase FieldCase;
+stSystem FieldCase;
+uint32_t runtime_min = 0;
+uint32_t runtime_sec = 0;
+bool Gc_on = false;
 bool FanOn = false;
 bool Valve_1_On = false;
 bool Valve_2_On = false;
@@ -89,7 +93,7 @@ UpdateAioHandler(const stCanPacket &packet)
         Adaptor.voltage = (float)value;
         break;
     case 0x40:  // fieldcase output voltage
-        FieldCase.out_voltage = (float)value;
+        FieldCase.v_syspwr = (float)value;
         break;
     case 0x41:  // fieldcase output current
         FieldCase.consumption = (float)value;
@@ -200,7 +204,7 @@ DebugRdHandler(const stCanPacket &packet)
             bat->trickle_start_time = GetLongL(&packet.data[2]);
             break;
         case 0x0d:  // charge_finish_time
-            bat->last_charge_time = GetLongL(&packet.data[2]);
+            bat->charge_finish_time = GetLongL(&packet.data[2]);
             break;
         case 0x0e:  // charge_times
             bat->charge_times = GetWordL(&packet.data[2]);
@@ -211,9 +215,9 @@ DebugRdHandler(const stCanPacket &packet)
         case 0x10:  // is_aged
             bat->is_aged = packet.data[2];
             break;
-        case 0x11:  // ocv
+        case 0x11:  // ng
             tu_value.tInt32 = GetLongL(&packet.data[2]);
-            bat->ocv = tu_value.tFloat;
+            bat->ng = tu_value.tFloat;
             break;
         case 0x12:  // impedance
             tu_value.tInt32 = GetLongL(&packet.data[2]);
@@ -224,6 +228,18 @@ DebugRdHandler(const stCanPacket &packet)
             break;
         case 0x14:  // error code
             bat->err_code = GetWordL(&packet.data[2]);
+            break;
+        case 0x015: // level_top
+            bat->level_top = GetWordL(&packet.data[2]);
+            break;
+        case 0x16:  // level_bottom
+            bat->level_bottom = GetWordL(&packet.data[2]);
+            break;
+        case 0x17:  // light_transition
+            bat->light_transition = GetLongL(&packet.data[2]);
+            break;
+        case 0x18:  // heavy_transition
+            bat->heavy_transition = GetLongL(&packet.data[2]);
             break;
         default : break;
         }
@@ -259,6 +275,44 @@ DebugRdHandler(const stCanPacket &packet)
         default : break;
         }
         break;
+    // fieldcase content
+    case 0x04:
+        switch (packet.data[1]) {
+        case 0x00:  // cover
+            FieldCase.is_covered = packet.data[2];
+            break;
+        case 0x01:  // power button
+            FieldCase.is_switchon = packet.data[2];
+            break;
+        case 0x02:  // v_adaptor
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            Adaptor.voltage = tu_value.tFloat;
+            break;
+        case 0x03:  // v_vcc12
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            FieldCase.v_syspwr = tu_value.tFloat;
+            break;
+        case 0x04:  // gc current
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            FieldCase.consumption = tu_value.tFloat;
+            break;
+        case 0x05:  // runtime minute
+            runtime_min = GetLongL(&packet.data[2]);
+            break;
+        case 0x06:  // runtime second
+            runtime_sec = GetLongL(&packet.data[2]);
+            break;
+        case 0x07:  // switchon time
+            FieldCase.switchon_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x08:  // switchoff time
+            FieldCase.switchoff_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x09:  // gc_pwr
+            Gc_on = packet.data[2];
+            break;
+        default : break;
+        }
     default : break;
     }
 }
@@ -266,31 +320,31 @@ DebugRdHandler(const stCanPacket &packet)
 static void
 CAN_Listen(void)
 {
-   int ret = 0;
-   CAN_msg msgrx;
-   stCanPacket packet;
+    int ret = 0;
+    CAN_msg msgrx;
+    stCanPacket packet;
 
-   packet.can_id.all = 0x00;
-   packet.dlc = 0;
-   memset(packet.data, 0, 8);
-   msgrx.format = EXTENDED_FORMAT;
-   msgrx.id = 0;
-   msgrx.len = 0;
-   msgrx.type = DATA_FRAME;
+    packet.can_id.all = 0x00;
+    packet.dlc = 0;
+    memset(packet.data, 0, 8);
+    msgrx.format = EXTENDED_FORMAT;
+    msgrx.id = 0;
+    msgrx.len = 0;
+    msgrx.type = DATA_FRAME;
 
-   ret = can_port.RecvCANMessage(&msgrx, 20);
+    ret = can_port.RecvCANMessage(&msgrx, 20);
 
-   if (ret == CAN_OK) {
-       packet.can_id.all = msgrx.id;
-       memcpy(packet.data, msgrx.data, msgrx.len);
-       packet.dlc = msgrx.len;
-   }else {
-       return;
-   }
+    if (ret == CAN_OK) {
+        packet.can_id.all = msgrx.id;
+        memcpy(packet.data, msgrx.data, msgrx.len);
+        packet.dlc = msgrx.len;
+    }else {
+        return;
+    }
 
-   tt++;
+    tt++;
 
-   if (packet.can_id.field.Target == CANID_PC) {
+    if (packet.can_id.field.Target == CANID_PC) {
         switch (packet.can_id.field.CmdNum) {
         case CMD_READ_AIO:
             UpdateAioHandler(packet);
@@ -308,7 +362,7 @@ CAN_Listen(void)
             break;
         default : break;
         }
-   }
+    }
 }
 
 /**
@@ -391,35 +445,30 @@ void Thread_Poll::run()
         msgtx.id = can_id.all;
         msgtx.len = 2;
         msgtx.data[0] = 0x01;
-        for (i = 0; i < 0x15; i++) {
+        for (i = 0; i < BAT_ITEM_NUM; i++) {
             msgtx.data[1] = i;
             can_port.SendCANMessage(&msgtx, 5);
             CAN_Listen();
         }
         msgtx.data[0] = 0x02;
-        for (i = 0; i < 0x15; i++) {
+        for (i = 0; i < BAT_ITEM_NUM; i++) {
             msgtx.data[1] = i;
             can_port.SendCANMessage(&msgtx, 5);
             CAN_Listen();
         }
         msgtx.data[0] = 0x03;
-        for (i = 0; i < 0x08; i++) {
+        for (i = 0; i < HEATER_ITEM_NUM; i++) {
             msgtx.data[1] = i;
             can_port.SendCANMessage(&msgtx, 5);
             CAN_Listen();
         }
 
-        /* polling for ZONE */
-        // polling for heater
-//        can_id.field.CmdNum = CMD_READ_ZONE;
-//        msgtx.id = can_id.all;
-//        msgtx.len = 3;
-//        msgtx.data[0] = 0x03;
-//        for (i = 0; i < 6; i++) {
-//            msgtx.data[1] = i;
-//            can_port.SendCANMessage(&msgtx, 1000);
-//            CAN_Listen();
-//        }
+        msgtx.data[0] = 0x04;
+        for (i = 0; i < FC_ITEM_NUM; i++) {
+            msgtx.data[1] = i;
+            can_port.SendCANMessage(&msgtx, 5);
+            CAN_Listen();
+        }
     }
 }
 
@@ -429,7 +478,9 @@ Thread_Poll::Thread_Poll(QObject *parent)
 Thread_Poll::~Thread_Poll()
 {}
 
+//uint32_t HashTable_Bat[17][4] = {
 
+//}
 
 
 

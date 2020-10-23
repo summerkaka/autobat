@@ -15,10 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->tableWidget_bat->resizeRowToContents(i);
     timerId = startTimer(UI_REFRESH_MS);
     timerId_curveSample = startTimer(CURVE_SAMPLE_MS);
-    ui->rtcurve_bat1_v->SetTitle("bat 1 v");
-    ui->rtcurve_bat1_t->SetTitle("bat 1 t");
-    ui->rtcurve_bat2_v->SetTitle("bat 2 v");
-    ui->rtcurve_bat2_t->SetTitle("bat 2 t");
+    ui->rtcurve_bat1_v->SetTitle("#1  bat 1 v");
+    ui->rtcurve_bat1_t->SetTitle("#2  bat 1 t");
+    ui->rtcurve_bat2_v->SetTitle("#3  bat 2 v");
+    ui->rtcurve_bat2_t->SetTitle("#4  bat 2 t");
     ui->rtcurve_heater_t->SetTitle("heater t");
     ui->checkBox_adaptor->setDisabled(true);
     ui->checkBox_powerButton->setDisabled(true);
@@ -95,14 +95,18 @@ void MainWindow::batUpdate(stBattery *bat)
     BatteryTabWrite(bat->index, 10, &bat->pre_start_time, kUint32);
     BatteryTabWrite(bat->index, 11, &bat->fast_start_time, kUint32);
     BatteryTabWrite(bat->index, 12, &bat->trickle_start_time, kUint32);
-    BatteryTabWrite(bat->index, 13, &bat->last_charge_time, kUint32);
+    BatteryTabWrite(bat->index, 13, &bat->charge_finish_time, kUint32);
     BatteryTabWrite(bat->index, 14, &bat->charge_times, kUint16);
     BatteryTabWrite(bat->index, 15, &bat->scale_flag, kUint8);
     BatteryTabWrite(bat->index, 16, &bat->is_aged, kUint8);
-    BatteryTabWrite(bat->index, 17, &bat->ocv, kFloat);
+    BatteryTabWrite(bat->index, 17, &bat->ng, kFloat);
     BatteryTabWrite(bat->index, 18, &bat->impedance, kFloat);
     BatteryTabWrite(bat->index, 19, &bat->charge_en, kUint8);
-    BatteryTabWrite(bat->index, ui->tableWidget_bat->rowCount()-1, &bat->err_code, kUint8);
+    BatteryTabWrite(bat->index, 20, &bat->level_top, kInt16);
+    BatteryTabWrite(bat->index, 21, &bat->level_bottom, kInt16);
+    BatteryTabWrite(bat->index, 22, &bat->light_transition, kUint32);
+    BatteryTabWrite(bat->index, 23, &bat->heavy_transition, kUint32);
+    BatteryTabWrite(bat->index, ui->tableWidget_bat->rowCount()-1, &bat->err_code, kUint16);
 }
 
 void MainWindow::heaterUpdate(void)
@@ -145,7 +149,15 @@ void MainWindow::timerEvent(QTimerEvent *event)
         ui->checkBox_valve2->setChecked((const bool)Valve_2_On);
         ui->lineEdit_gas1->setText(QString::number(gas1_pressure));
         ui->lineEdit_gas2->setText(QString::number(gas2_pressure));
-
+        ui->lineEdit_coverTime->setText(QString::number(FieldCase.cover_time));
+        ui->lineEdit_lidCloseSleepSetting->setText(QString::number(30));
+        ui->lineEdit_swOffSleepSetting->setText(QString::number(15));
+        ui->lineEdit_runtime->setText(QString::number(runtime_min));
+        ui->lineEdit_swOnTime->setText(QString::number(FieldCase.switchon_time));
+        ui->lineEdit_swOffTime->setText(QString::number(FieldCase.switchoff_time));
+        ui->lineEdit_vAdaptor->setText(QString::number(Adaptor.voltage));
+        ui->lineEdit_vUGC->setText(QString::number(FieldCase.v_syspwr));
+        ui->lineEdit_gc_sts->setText(QString::number(Gc_on));
         ui->label_test->setText(QString::number(tt));
 
         printf("updateui\n");
@@ -154,8 +166,9 @@ void MainWindow::timerEvent(QTimerEvent *event)
     {
         *(ui->rtcurve_bat1_v) << Battery_1.voltage;
         *(ui->rtcurve_bat1_t) << Battery_1.temperature;
-        /*ui->rtcurve_bat2_v << Battery_2.voltage;
-        ui->rtcurve_bat2_t << Battery_2.temperature*/;
+        *(ui->rtcurve_bat2_v) << Battery_2.voltage;
+        *(ui->rtcurve_bat2_t) << Battery_2.temperature;
+        *(ui->rtcurve_heater_t) << Heater.temperature;
     }
 }
 
@@ -524,4 +537,31 @@ void MainWindow::on_pushButton_reset3_clicked()
 void MainWindow::on_pushButton_reset4_clicked()
 {
     ui->rtcurve_bat2_t->Clear();
+}
+
+void MainWindow::on_lineEdit_fwPath_editingFinished()
+{
+    fwPath = ui->lineEdit_fwPath->text();
+}
+
+void MainWindow::on_pushButton_fwPath_clicked()
+{
+    fwPath = QFileDialog::getOpenFileName(this,
+                                              tr("Select hex file"),
+                                              "",
+                                              tr("File (*.hex *.txt)"));
+
+    if(fwPath.isEmpty())
+    {
+         return;
+    }
+    else
+    {
+        ui->lineEdit_fwPath->setText(fwPath);
+    }
+}
+
+void MainWindow::on_pushButton_fwUpdate_clicked()
+{
+
 }

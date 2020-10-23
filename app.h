@@ -10,7 +10,7 @@ struct _StBattery{
     bool            charge_en;          // soft switch to start charge
     float           voltage;
     float           max_volt;
-    float           volt_lastmin;       // to monitor voltage drop
+    float           last_voltage;       // to monitor voltage drop
     float           remain_time;        // battery remain time to reach 10V alarm_line
     float           current;
     float           ng;                 // 0~1 , battery charge efficiency
@@ -21,16 +21,24 @@ struct _StBattery{
     uint8_t	        scale_flag;	        // 0b00x1: level_bottom record, 0b001x: level_top record
     float           temperature;
     bool            is_aged;
-    float           impedance;
+    uint8_t         aging_cnt[2];       // [0] for reach top, [1] for reach bottom
     float           charge_current;     // dynamic setting for fast-charge
+    uint32_t        light_transition;   // light load begin time second
+    uint32_t        heavy_transition;   // heavy load begin time second
+    uint32_t        tick_sample;        // sample gauge voltage every 50ms
+    uint32_t        tick_drop;          // timer to record battery vdrop, unit is second
+    uint32_t        tick_2s;            // timer to check cell short
     uint32_t        pre_start_time;     // pre-charge start moment
     uint32_t        fast_start_time;    // fast-charge start moment
     uint32_t        fastcharge_timer;   // fast charge time out protection
     uint32_t        trickle_start_time; // trickle-charge start moment
-    uint32_t        last_charge_time;	// last one cycle charge finsh moment (minutes)
+    uint32_t        charge_finish_time;	// last one cycle charge finsh moment (minutes)
     uint16_t        charge_times;       // total charge times of this battery
     uint16_t        err_code;
-    float           ocv;                // for calculating impedance
+    float           impedance;
+    bool            ocv_flag;           // indicate bettery is oc
+    float           i_heavy;            // last heavy load I record
+    float           v_heavy;            // last heavy load V record
 };
 typedef struct _StBattery stBattery;
 extern stBattery Battery_1;
@@ -55,12 +63,18 @@ typedef struct {
 extern stAdaptor Adaptor;
 
 typedef struct {
-    float   out_voltage;
-    float   consumption;
-    bool    is_covered;
-    bool    is_switchoff;
-} stFieldCase;
-extern stFieldCase FieldCase;
+    stBattery   *bat_channel;    // (0)NULL, 1, 2, (3)BOTH
+    float       consumption;
+    float       v_syspwr;
+    bool        is_covered;
+    bool        is_switchon;
+    uint32_t    cover_time;     // minutes
+    uint32_t    switchoff_time; // minutes
+    uint32_t    switchon_time;  // seconds, used to prevent spurious lo_pwr_trigger
+    float       gas_1_pressure;
+    float       gas_2_pressure;
+} stSystem;
+extern stSystem FieldCase;
 
 class Thread_Poll : public QThread
 {
@@ -82,7 +96,9 @@ extern bool Valve_1_On;
 extern bool Valve_2_On;
 extern float gas1_pressure;
 extern float gas2_pressure;
-
+extern uint32_t runtime_min;
+extern uint32_t runtime_sec;
+extern bool Gc_on;
 void InfoInit(void);
 
 #endif // CAN_APP_H

@@ -13,6 +13,7 @@ SingleCurve::SingleCurve(QWidget *parent, const QString &tittle) :
     curve1 = new QLineSeries();
     scatter1 = new QScatterSeries();
     scatter1->setMarkerSize(5);
+    scatter1->setColor(Qt::red);
     for (int i = 0; i < MAXSIZE; ++i) {
         curve1->append(i, -10);
         scatter1->append(i, -10);
@@ -22,6 +23,7 @@ SingleCurve::SingleCurve(QWidget *parent, const QString &tittle) :
     chart->addSeries(scatter1);
     chart->legend()->hide();
     chart->createDefaultAxes();
+    chart->setTitle(tittle);
     chart->axisX()->setRange(0, MAXSIZE);
     chart->axisY()->setRange(0, 1);
     chartView = new QChartView(chart);
@@ -42,7 +44,7 @@ void SingleCurve::SetTitle(const QString &title)
 
 void SingleCurve::Clear(void)
 {
-    float value = *data1.end();
+    float value = data1.value(MAXSIZE - 1);
     for (int i = 0; i < MAXSIZE; ++i) {
         data1 << value;
     }

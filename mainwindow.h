@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QThread>
@@ -74,6 +75,12 @@ private slots:
 
     void on_pushButton_reset4_clicked();
 
+    void on_lineEdit_fwPath_editingFinished();
+
+    void on_pushButton_fwPath_clicked();
+
+    void on_pushButton_fwUpdate_clicked();
+
 protected:
     void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 
@@ -82,11 +89,10 @@ private:
     QMessageBox msg;
     Thread_Poll *t_poll;
 
-    uint8_t radio_heater = 0;
-    uint8_t cfm = 0;
-
     int timerId;
     int timerId_curveSample;
+
+    QString fwPath;
 
     void Pop(const char *buf, int16_t timeout);
     void BatteryTabWrite(uint8_t bat_index, uint8_t item, const void *data, eType format);
