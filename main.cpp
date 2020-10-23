@@ -1,11 +1,9 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "app_include.h"
-
-int16_t comport_num = 0;
 
 int main(int argc, char *argv[])
 {
+    InfoInit();
     QApplication a(argc, argv);
     MainWindow w;
 

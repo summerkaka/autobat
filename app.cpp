@@ -1,41 +1,136 @@
-#include "app_include.h"
 #include "mainwindow.h"
 
 #define POOL_NUM 32
 #define POLL_NUM 2
 
-stBattery Battery_1 = {
-    Battery_1.status = 1,
-    Battery_1.voltage = 12,
-    Battery_1.current = 5,
-    Battery_1.temperature = 25,
-    Battery_1.level = 0,
-    Battery_1.capacity = 22000,
-    Battery_1.err_code = 0,
-    Battery_1.mux_on = 1,
-};
+stBattery Battery_1;
+stBattery Battery_2;
+stHeater Heater;
+stAdaptor Adaptor;
+stFieldCase FieldCase;
+bool FanOn = false;
+bool Valve_1_On = false;
+bool Valve_2_On = false;
+float gas1_pressure;
+float gas2_pressure;
+int tt = 0;
 
-stBattery Battery_2 = {
-    Battery_2.status = 1,
-    Battery_2.voltage = 8,
-    Battery_2.current = 5,
-    Battery_2.temperature = 28,
-    Battery_2.level = 0,
-    Battery_2.capacity = 22000,
-    Battery_2.err_code = 0,
-    Battery_2.mux_on = 1,
-};
+void InfoInit(void)
+{
+    Battery_1.index = 0;
+    Battery_1.voltage = 0;
+    Battery_1.temperature = 0;
+    Battery_1.mux_on = false;
 
-stHeater Heater = {
-    Heater.status = 0,
-    Heater.temperature = 0,
-    Heater.pt100_adccode = 0,
-    Heater.setpoint = 0,
-    Heater.duty = 0,
-    Heater.kp = 0,
-    Heater.ki = 0,
-    Heater.kd = 0,
-};
+    Battery_2.index = 1;
+    Battery_2.voltage = 0;
+    Battery_2.temperature = 0;
+    Battery_2.mux_on = false;
+}
+
+static void
+UpdateAioHandler(const stCanPacket &packet)
+{
+    int32_t value;
+
+    value = GetLongL(&packet.data[1]);
+    value = (value & 0x00800000) ? (value | 0xff000000) :  (value & 0x00ffffff);
+
+    switch (packet.data[0]) {
+    case 0x01:  // bat_1 volt
+        Battery_1.voltage = (float)value / 1000;
+        break;
+    case 0x02:  // bat_2 volt
+        Battery_2.voltage = (float)value / 1000;
+        break;
+    case 0x03:  // bat_1 current
+        Battery_1.current = (float)value / 1000;
+        break;
+    case 0x04:  // bat_2 current
+        Battery_2.current = (float)value / 1000;
+        break;
+    case 0x05:  // bat_1 temperature
+        Battery_1.temperature = (float)value / 1000;
+        break;
+    case 0x06:  // bat_2 temperature
+        Battery_2.temperature = (float)value / 1000;
+        break;
+    case 0x07:  // bat_1 level
+        Battery_1.level = (float)value;
+        break;
+    case 0x08:  // bat_2 level
+        Battery_2.level = (float)value;
+        break;
+    case 0x09:  // bat_1 capacity
+        Battery_1.capacity = (float)value;
+        break;
+    case 0x0a:  // bat_1 capacity
+        Battery_2.capacity = (float)value;
+        break;
+    case 0x0b:  // bat_1 remain_time
+        Battery_1.remain_time = (float)value;
+        break;
+    case 0x0c:  // bat_21 remain_time
+        Battery_2.remain_time = (float)value;
+        break;
+    case 0x0d:  // bat_1 charge_times
+        Battery_1.charge_times = (float)value;
+        break;
+    case 0x0e:  // bat_2 charge_times
+        Battery_2.charge_times = (float)value;
+        break;
+    case 0x20:  // heater temperature
+        Heater.temperature = (float)value / 1000;
+        break;
+    case 0x21:  // heater duty cycle
+        Heater.duty = (float)value;
+        break;
+    case 0x30:  // adaptor voltage
+        Adaptor.voltage = (float)value;
+        break;
+    case 0x40:  // fieldcase output voltage
+        FieldCase.out_voltage = (float)value;
+        break;
+    case 0x41:  // fieldcase output current
+        FieldCase.consumption = (float)value;
+        break;
+    case 0x50:  // gas 1 pressure
+        gas1_pressure = (float)value / 1000;
+        break;
+    case 0x51:  // gas 2 pressure
+        gas2_pressure = (float)value / 1000;
+        break;
+    default : break;
+    }
+}
+
+static void
+ReadDectADCHander(const stCanPacket &packet)
+{
+    uint16_t value = GetWordL(&packet.data[0]);
+    // adaptor supply
+    Adaptor.status = (value & DIO_ADAPTOR_SUPPLY) ? 1 : 0;
+    // bat1 mux_on
+    Battery_1.mux_on = (value & DIO_BAT1_SUPPLY) ? 1 : 0;
+    // bat2 mux_on
+    Battery_2.mux_on = (value & DIO_BAT2_SUPPLY) ? 1 : 0;
+    // fan switch
+    FanOn = (value & DIO_FAN) ? 1 : 0;
+    // heater switch
+    Heater.status = (value & DIO_HEATER) ? 1 : 0;
+    // bat1 charge
+    Battery_1.charge_en = (value & DIO_BAT1_CHARGE) ? 1 : 0;
+    // bat2 charge
+    Battery_2.charge_en = (value & DIO_BAT2_CHARGE) ? 1 : 0;
+    // bat1 aged
+    Battery_1.is_aged = (value & DIO_BAT1_AGED) ? 1 : 0;
+    // bat2 aged
+    Battery_2.is_aged = (value & DIO_BAT2_AGED) ? 1 : 0;
+    // valve1 switch
+    Valve_1_On = (value & DIO_VALVE1_SW) ? 1 : 0;
+    // valve2 switch
+    Valve_2_On = (value & DIO_VALVE2_SW) ? 1 : 0;
+}
 
 /**
  * @ingroup intern
@@ -44,10 +139,11 @@ stHeater Heater = {
  * @return none
  */
 static void
-UpdateInfoHandler(const stCanPacket &packet)
+DebugRdHandler(const stCanPacket &packet)
 {
     stBattery *bat;
     int16_t value = 0;
+    tuType32Bit tu_value;
 
     switch (packet.data[0]) {
 
@@ -64,35 +160,74 @@ UpdateInfoHandler(const stCanPacket &packet)
             bat->status = packet.data[2];
             break;
         case 0x01:  // voltage
-            value = GetWordL(&packet.data[2]);
-            bat->voltage = (float)value / 100;
+            tu_value.tInt32  = GetLongL(&packet.data[2]);
+            bat->voltage = tu_value.tFloat;
             break;
-        case 0x02: // current
-            value = GetWordL(&packet.data[2]);
-            bat->current = (float)value / 100;
+        case 0x02:  // current
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            bat->current = tu_value.tFloat;
             break;
-        case 0x03: // temperature
-            value = GetWordL(&packet.data[2]);
-            bat->temperature = (float)value / 100;
+        case 0x03:  // temperature
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            bat->temperature = tu_value.tFloat;
             break;
-        case 0x04: // level
-            value = GetWordL(&packet.data[2]);
-            bat->level = value;
+        case 0x04:  // level
+            bat->level = GetWordL(&packet.data[2]);
             break;
-        case 0x05: // capacity
-            value = GetWordL(&packet.data[2]);
-            bat->capacity = value;
+        case 0x05:  // capacity
+            bat->capacity = GetWordL(&packet.data[2]);
             break;
-        case 0x06: // error code
-            value = GetWordL(&packet.data[2]);
-            bat->err_code = value;
+        case 0x06:  // mux_on
+            bat->mux_on = packet.data[2];
             break;
-        case 0x07:
-            bat->mux_on = packet.data[2] == 0 ? 0 : 1;
+        case 0x07:  // remain_time
+            bat->remain_time = GetWordL(&packet.data[2]);
+            break;
+        case 0x08:  // charge Iset
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            bat->charge_current = tu_value.tFloat;
+            break;
+        case 0x09:  // charge_timer
+            bat->fastcharge_timer = GetLongL(&packet.data[2]);
+            break;
+        case 0x0a:  // pre_start_time
+            bat->pre_start_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x0b:  // fast_start_time
+            bat->fast_start_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x0c:  // trickle_start_time
+            bat->trickle_start_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x0d:  // charge_finish_time
+            bat->last_charge_time = GetLongL(&packet.data[2]);
+            break;
+        case 0x0e:  // charge_times
+            bat->charge_times = GetWordL(&packet.data[2]);
+            break;
+        case 0x0f:  // scale_flag
+            bat->scale_flag = packet.data[2];
+            break;
+        case 0x10:  // is_aged
+            bat->is_aged = packet.data[2];
+            break;
+        case 0x11:  // ocv
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            bat->ocv = tu_value.tFloat;
+            break;
+        case 0x12:  // impedance
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            bat->impedance = tu_value.tFloat;
+            break;
+        case 0x13:  // charge_en
+            bat->charge_en = packet.data[2];
+            break;
+        case 0x14:  // error code
+            bat->err_code = GetWordL(&packet.data[2]);
             break;
         default : break;
         }
-
+        break;
     // heater content
     case 0x03:
         switch (packet.data[1]) {
@@ -100,100 +235,80 @@ UpdateInfoHandler(const stCanPacket &packet)
             Heater.status = packet.data[2];
             break;
         case 0x01:  // temperature
-            value = GetWordL(&packet.data[2]);
-            Heater.temperature = value / 100;
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            Heater.temperature = tu_value.tFloat;
             break;
         case 0x02:  // setpoint
-            value = GetWordL(&packet.data[2]);
-            Heater.setpoint = value / 100;
+            tu_value.tInt32 = GetLongL(&packet.data[2]);
+            Heater.setpoint = tu_value.tFloat;
             break;
         case 0x03:  // duty cycle
-            value = GetWordL(&packet.data[2]);
-            Heater.duty = value / 10000;
+            Heater.duty = GetWordL(&packet.data[2]);
             break;
-        case 0x04:  // PID parameter
+        case 0x04:  // PID Kp
             Heater.kp = GetWordL(&packet.data[2]);
-            Heater.ki = GetWordL(&packet.data[4]);
-            Heater.kd = GetWordL(&packet.data[6]);
             break;
-        case 0x05:  // pt100 adc code
+        case 0x05:  // PID Ki
+            Heater.ki = GetWordL(&packet.data[2]);
+            break;
+        case 0x06:  // PID Kd
+            Heater.kd = GetWordL(&packet.data[2]);
+            break;
+        case 0x07:  // pt100 adc code
             Heater.pt100_adccode = GetLongL(&packet.data[2]);
         default : break;
         }
+        break;
     default : break;
     }
 }
 
-/**
- * @ingroup extern
- * @brief send CAN bus command
- * @param target_id: CAN address for target
- * @param src_id:    CAN address from source
- * @param cmd_cmd:   CAN command number
- * @param *data:     pointer to payload buffer
- * @param dlc:       CAN packet dlc
- * @return 0: succeed, negative: fail
- */
-int
-SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, uint8_t dlc)
+static void
+CAN_Listen(void)
 {
-    tuCanId can_id;
-    can_id.field.Target = target_id;
-    can_id.field.Src = src_id;
-    can_id.field.CmdNum = cmd_num;
+   int ret = 0;
+   CAN_msg msgrx;
+   stCanPacket packet;
 
-//    return CAN_SendFrame(fd_cansocket, can_id.all, (const uint8_t *)data, dlc, 20);
-    return 0;
-}
+   packet.can_id.all = 0x00;
+   packet.dlc = 0;
+   memset(packet.data, 0, 8);
+   msgrx.format = EXTENDED_FORMAT;
+   msgrx.id = 0;
+   msgrx.len = 0;
+   msgrx.type = DATA_FRAME;
 
-Thread_Poll::Thread_Poll(QObject *parent)
-{}
+   ret = can_port.RecvCANMessage(&msgrx, 20);
 
-Thread_Poll::~Thread_Poll()
-{}
+   if (ret == CAN_OK) {
+       packet.can_id.all = msgrx.id;
+       memcpy(packet.data, msgrx.data, msgrx.len);
+       packet.dlc = msgrx.len;
+   }else {
+       return;
+   }
 
-Thread_Listen::Thread_Listen(QObject *parent)
-{}
+   tt++;
 
-Thread_Listen::~Thread_Listen()
-{}
-
-Thread_Dummy::Thread_Dummy(QObject *parent)
-{}
-
-Thread_Dummy::~Thread_Dummy()
-{}
-
-/**
- * @ingroup extern
- * @brief listen can socket, receive packet and call appropriate handler()
- * @param none
- * @return none
- */
-void Thread_Listen::run()
-{
-    int ret = 0;
-    stCanPacket frame_rx;
-    frame_rx.can_id.all = 0x00;
-    memset(frame_rx.data, 0, 8);
-
-    while (1) {
-//        ret = CAN_RecvFrame(fd_cansocket, &frame_rx, 20);
-        if (ret > 0 && (((stCanId *)&frame_rx.can_id)->Target == CANID_CHARGE)) {
-            switch (((stCanId *)&frame_rx.can_id)->CmdNum) {
-            case CMD_RD_ZONE:   // get info from target then update onto ui
-                UpdateInfoHandler(frame_rx);
-                break;
-            case CMD_WR_ZONE:   // get info from ui then send command to target
-                // get answer for previous command, need do nothing
-                break;
-            case CMD_WRITE_SP:
-                // get answer for previous command, need do nothing
-                break;
-            default : break;
-            }
+   if (packet.can_id.field.Target == CANID_PC) {
+        switch (packet.can_id.field.CmdNum) {
+        case CMD_READ_AIO:
+            UpdateAioHandler(packet);
+            break;
+        case CMD_READ_ZONE:
+            break;
+        case CMD_READ_DIO:
+            ReadDectADCHander(packet);
+            break;
+        case CMD_WRITE_SP:
+            // get answer for previous command, need do nothing
+            break;
+        case CMD_DEBUG_RD:
+            DebugRdHandler(packet);
+            break;
+        default : break;
         }
-    }
+   }
 }
 
 /**
@@ -205,54 +320,114 @@ void Thread_Listen::run()
 void Thread_Poll::run()
 {
     uint8_t i = 0;
-    uint32_t can_id = 0x042022c3;
-    uint32_t dlc = 1;
-    uint8_t data[8] = {0};
+    tuCanId can_id;
+    CAN_msg msgtx;
 
     while (1)
     {
-        can_id = 0x042022c3;
-        dlc = 2;
+        can_id.all = 0;
+        can_id.field.Target = CANID_CHARGE;
+        can_id.field.Src = CANID_PC;
+        msgtx.ch = 0;
+        msgtx.id = can_id.all;
+        msgtx.type = DATA_FRAME;
+        msgtx.format = EXTENDED_FORMAT;
 
-        // poll for battery_1 information
-        data[0] = 0x01;
-        for (i = 0; i < 8; i++) {
-            data[1] = i;
-//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
+        /* polling for AIO */
+        can_id.field.CmdNum = CMD_READ_AIO;
+        msgtx.id = can_id.all;
+        msgtx.len = 1;
+        // battery
+        for (i = 1; i <= 0x0e; i++) {   // aio
+            msgtx.data[0] = i;
+            can_port.SendCANMessage(&msgtx, 1000);
+            CAN_Listen();
+        }
+        // heater
+        msgtx.data[0] = 0x20;
+        can_port.SendCANMessage(&msgtx, 1000);
+        CAN_Listen();
+        msgtx.data[0] = 0x21;
+        can_port.SendCANMessage(&msgtx,1000);
+        CAN_Listen();
+        // adaptor
+        msgtx.data[0] = 0x30;
+        can_port.SendCANMessage(&msgtx, 1000);
+        CAN_Listen();
+        // field case
+        msgtx.data[0] = 0x40;
+        can_port.SendCANMessage(&msgtx, 1000);
+        CAN_Listen();
+        msgtx.data[0] = 0x41;
+        can_port.SendCANMessage(&msgtx,1000);
+        CAN_Listen();
+        // gas
+        msgtx.data[0] = 0x50;
+        can_port.SendCANMessage(&msgtx, 1000);
+        CAN_Listen();
+        msgtx.data[0] = 0x51;
+        can_port.SendCANMessage(&msgtx, 1000);
+        CAN_Listen();
+
+        /* polling for DIO */
+        can_id.field.CmdNum = CMD_DETECT_ADC;
+        msgtx.id = can_id.all;
+        msgtx.len = 0;
+        can_port.SendCANMessage(&msgtx, 5);
+        CAN_Listen();
+
+        /* polling for ZONE */
+        can_id.field.CmdNum = CMD_READ_ZONE;
+        msgtx.id = can_id.all;
+        msgtx.len = 1;
+        for (i = 1; i <= 3; i++) {
+            msgtx.data[0] = i;
+            can_port.SendCANMessage(&msgtx, 5);
+            CAN_Listen();
         }
 
-        // poll for battery_2 information
-        data[0] = 0x02;
-        for (i = 1; i < 8; i++) {
-            data[1] = i;
-//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
+        /* polling for debug info */
+        can_id.field.CmdNum = CMD_DEBUG_RD;
+        msgtx.id = can_id.all;
+        msgtx.len = 2;
+        msgtx.data[0] = 0x01;
+        for (i = 0; i < 0x15; i++) {
+            msgtx.data[1] = i;
+            can_port.SendCANMessage(&msgtx, 5);
+            CAN_Listen();
+        }
+        msgtx.data[0] = 0x02;
+        for (i = 0; i < 0x15; i++) {
+            msgtx.data[1] = i;
+            can_port.SendCANMessage(&msgtx, 5);
+            CAN_Listen();
+        }
+        msgtx.data[0] = 0x03;
+        for (i = 0; i < 0x08; i++) {
+            msgtx.data[1] = i;
+            can_port.SendCANMessage(&msgtx, 5);
+            CAN_Listen();
         }
 
-        // poll for heater information
-        data[0] = 0x03;
-        for (i = 0; i < 6; i++) {
-            data[1] = i;
-//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
-        }
-
-        sleep(1);
+        /* polling for ZONE */
+        // polling for heater
+//        can_id.field.CmdNum = CMD_READ_ZONE;
+//        msgtx.id = can_id.all;
+//        msgtx.len = 3;
+//        msgtx.data[0] = 0x03;
+//        for (i = 0; i < 6; i++) {
+//            msgtx.data[1] = i;
+//            can_port.SendCANMessage(&msgtx, 1000);
+//            CAN_Listen();
+//        }
     }
 }
 
-void Thread_Dummy::run()
-{
-    while (1)
-    {
-        QThread::sleep(1);
+Thread_Poll::Thread_Poll(QObject *parent)
+{}
 
-        Battery_1.voltage++;
-        Battery_2.voltage++;
-        Battery_1.temperature++;
-        Battery_2.temperature++;
-    }
-}
-
-
+Thread_Poll::~Thread_Poll()
+{}
 
 
 

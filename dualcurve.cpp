@@ -72,7 +72,7 @@ void DualCurve::timerEvent(QTimerEvent *event)
         if (isVisible()) {
             delta1 = MAXSIZE - data1.size();
             delta2 = MAXSIZE - data2.size();
-            chart->axisY()->setRange(y_min-5, y_max+5);
+            chart->axisY()->setRange(y_min-0.2, y_max+0.2);
             for (int i = 0; i < data1.size(); ++i) {
                 curve1->replace(delta1+i, curve1->at(delta1+i).x(), data1.at(i));
                 scatter1->replace(delta1+i, scatter1->at(delta1+i).x(), data1.at(i));

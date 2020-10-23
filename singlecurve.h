@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QPushButton>
 #include <QSplineSeries>
 #include <QScatterSeries>
 #include <QValueAxis>
@@ -18,22 +19,19 @@ public:
     explicit SingleCurve(QWidget *parent = nullptr,
                          const QString &tittle = "nocurve");
     ~SingleCurve();
-    void Config(float *data1, const QString &title = "realtime curve", int16_t sample_interval = 5);
+    void SetTitle(const QString &title = "realtime curve");
+    void Clear(void);
+    void operator << (float data);
 
 protected:
-    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
+    QList<float> data1; // 存储业务数据的 list
 
 private:
-    int timerId;
-    float y_max = 0, y_min = 0;
-    float *newdata1 = nullptr;
-    QList<double> data1; // 存储业务数据的 list
     QChart *chart;
     QChartView *chartView;
     QValueAxis *m_axis;
-    QSplineSeries *curve1;
+    QLineSeries *curve1;
     QScatterSeries *scatter1;
-
 
 signals:
 

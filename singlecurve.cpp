@@ -10,14 +10,10 @@
 SingleCurve::SingleCurve(QWidget *parent, const QString &tittle) :
     QWidget(parent)
 {
-    y_max = 0;
-    y_min = 0;
-    timerId = startTimer(SAMPLE_INTERVAL * 1000);
-    qsrand(QDateTime::currentDateTime().toTime_t());
-    curve1 = new QSplineSeries();
+    curve1 = new QLineSeries();
     scatter1 = new QScatterSeries();
     scatter1->setMarkerSize(5);
-    for (int i = 0; i < 181; ++i) {
+    for (int i = 0; i < MAXSIZE; ++i) {
         curve1->append(i, -10);
         scatter1->append(i, -10);
     }
@@ -25,12 +21,12 @@ SingleCurve::SingleCurve(QWidget *parent, const QString &tittle) :
     chart->addSeries(curve1);
     chart->addSeries(scatter1);
     chart->legend()->hide();
-    chart->setTitle(tittle);
     chart->createDefaultAxes();
-    chart->axisY()->setRange(0 + 25, 100 - 25);
+    chart->axisX()->setRange(0, MAXSIZE);
+    chart->axisY()->setRange(0, 1);
     chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    QHBoxLayout *layout = new QHBoxLayout();
+    chartView->setRenderHint(QPainter::HighQualityAntialiasing);
+    QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(chartView);
     setLayout(layout);
@@ -39,36 +35,36 @@ SingleCurve::SingleCurve(QWidget *parent, const QString &tittle) :
 SingleCurve::~SingleCurve()
 {}
 
-void SingleCurve::Config(float *data1, const QString &title, int16_t sample_interval)
+void SingleCurve::SetTitle(const QString &title)
 {
-    newdata1 = data1;
     chart->setTitle(title);
-    killTimer(timerId);
-    timerId = startTimer(sample_interval * 1000);
 }
 
-void SingleCurve::timerEvent(QTimerEvent *event)
+void SingleCurve::Clear(void)
 {
-    int delta1;
-    if (event->timerId() == timerId) {
-        if (newdata1 == nullptr)
-            return;
-
-        y_max = y_max > *newdata1 ? y_max : *newdata1;
-        y_min = y_min < *newdata1 ? y_min : *newdata1;
-
-        data1 << *newdata1;
-        while (data1.size() > MAXSIZE) {
-            data1.removeFirst();
-        }
-        if (isVisible()) {
-            delta1 = MAXSIZE - data1.size();
-            chart->axisY()->setRange(y_min-5, y_max+5);
-            for (int i = 0; i < data1.size(); ++i) {
-                curve1->replace(delta1+i, curve1->at(delta1+i).x(), data1.at(i));
-                scatter1->replace(delta1+i, scatter1->at(delta1+i).x(), data1.at(i));
-            }
-        }
+    float value = *data1.end();
+    for (int i = 0; i < MAXSIZE; ++i) {
+        data1 << value;
     }
 }
 
+void SingleCurve::operator << (float data)
+{
+    int delta1;
+    float min, max;
+
+    data1 << data;
+    min = *std::min_element(data1.begin(), data1.end());
+    max = *std::max_element(data1.begin(), data1.end());
+    while (data1.size() > MAXSIZE) {
+        data1.removeFirst();
+    }
+    if (isVisible()) {
+        delta1 = MAXSIZE - data1.size();
+        chart->axisY()->setRange(min - 0.01, max + 0.01);
+        for (int i = 0; i < data1.size(); ++i) {
+            curve1->replace(delta1+i, curve1->at(delta1+i).x(), data1.at(i));
+            scatter1->replace(delta1+i, scatter1->at(delta1+i).x(), data1.at(i));
+        }
+    }
+}
