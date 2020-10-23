@@ -1,0 +1,15 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\can_if.o
+./debug\dualcurve.o
+./debug\singlecurve.o
+./debug\RT_CAN.o
+./debug\RT_COM.o
+./debug\app.o
+./debug\moc_mainwindow.o
+./debug\moc_main.o
+./debug\moc_dualcurve.o
+./debug\moc_singlecurve.o
+./debug\moc_app.o
+);

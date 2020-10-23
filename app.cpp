@@ -1,58 +1,40 @@
 #include "app_include.h"
 #include "mainwindow.h"
-#include <can_app.h>
-#include <can_if.h>
-
 
 #define POOL_NUM 32
 #define POLL_NUM 2
 
-const struct can_frame cantx_pool[POLL_NUM] = {
-    // bat-1 status
-    {
-        .can_id = 0x042022c3,
-        .can_dlc = 0,
-#ifdef  DESKTOP
-        .__pad = 0,
-        .__res0 = 0,  /* reserved / padding */
-        .__res1 = 0,  /* reserved / padding */
-#endif
-        .data = {0x01,0x01,0,0,0,0,0,0},
-    },
-    {}
-};
-
 stBattery Battery_1 = {
-    .status = 1,
-    .voltage = 12,
-    .current = 5,
-    .temperature = 25,
-    .level = 0,
-    .capacity = 0,
-    .err_code = 0,
-    .mux_on = 0
+    Battery_1.status = 1,
+    Battery_1.voltage = 12,
+    Battery_1.current = 5,
+    Battery_1.temperature = 25,
+    Battery_1.level = 0,
+    Battery_1.capacity = 22000,
+    Battery_1.err_code = 0,
+    Battery_1.mux_on = 1,
 };
 
 stBattery Battery_2 = {
-    .status = 1,
-    .voltage = 8,
-    .current = 5,
-    .temperature = 28,
-    .level = 0,
-    .capacity = 0,
-    .err_code = 0,
-    .mux_on = 0
+    Battery_2.status = 1,
+    Battery_2.voltage = 8,
+    Battery_2.current = 5,
+    Battery_2.temperature = 28,
+    Battery_2.level = 0,
+    Battery_2.capacity = 22000,
+    Battery_2.err_code = 0,
+    Battery_2.mux_on = 1,
 };
 
 stHeater Heater = {
-    .status = 0,
-    .temperature = 0,
-    .pt100_adccode = 0,
-    .setpoint = 0,
-    .duty = 0,
-    .kp = 0,
-    .ki = 0,
-    .kd = 0
+    Heater.status = 0,
+    Heater.temperature = 0,
+    Heater.pt100_adccode = 0,
+    Heater.setpoint = 0,
+    Heater.duty = 0,
+    Heater.kp = 0,
+    Heater.ki = 0,
+    Heater.kd = 0,
 };
 
 /**
@@ -62,7 +44,7 @@ stHeater Heater = {
  * @return none
  */
 static void
-UpdateInfoHandler(const struct can_frame &packet)
+UpdateInfoHandler(const stCanPacket &packet)
 {
     stBattery *bat;
     int16_t value = 0;
@@ -80,41 +62,33 @@ UpdateInfoHandler(const struct can_frame &packet)
         switch (packet.data[1]) {
         case 0x00:  // status
             bat->status = packet.data[2];
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->status);
             break;
         case 0x01:  // voltage
             value = GetWordL(&packet.data[2]);
             bat->voltage = (float)value / 100;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->voltage);
             break;
         case 0x02: // current
             value = GetWordL(&packet.data[2]);
             bat->current = (float)value / 100;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->current);
             break;
         case 0x03: // temperature
             value = GetWordL(&packet.data[2]);
             bat->temperature = (float)value / 100;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->temperature);
             break;
         case 0x04: // level
             value = GetWordL(&packet.data[2]);
             bat->level = value;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->level);
             break;
         case 0x05: // capacity
             value = GetWordL(&packet.data[2]);
             bat->capacity = value;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->capacity);
             break;
         case 0x06: // error code
             value = GetWordL(&packet.data[2]);
             bat->err_code = value;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->err_code);
             break;
         case 0x07:
             bat->mux_on = packet.data[2] == 0 ? 0 : 1;
-//            w->BatteryTabWrite(packet.data[0] - 1, packet.data[1], &bat->mux_on);
             break;
         default : break;
         }
@@ -124,35 +98,26 @@ UpdateInfoHandler(const struct can_frame &packet)
         switch (packet.data[1]) {
         case 0x00:  // status
             Heater.status = packet.data[2];
-//            w->HeaterTabWrite(0x00, &Heater.status);
-//            w->HeaterTabWrite(0x04, &Heater.status);
             break;
         case 0x01:  // temperature
             value = GetWordL(&packet.data[2]);
             Heater.temperature = value / 100;
-//            w->HeaterTabWrite(0x01, &Heater.temperature);
             break;
         case 0x02:  // setpoint
             value = GetWordL(&packet.data[2]);
             Heater.setpoint = value / 100;
-//            w->HeaterTabWrite(0x05, &Heater.setpoint);
             break;
         case 0x03:  // duty cycle
             value = GetWordL(&packet.data[2]);
             Heater.duty = value / 10000;
-//            w->HeaterTabWrite(0x03, &Heater.duty);
             break;
         case 0x04:  // PID parameter
             Heater.kp = GetWordL(&packet.data[2]);
-//            w->HeaterTabWrite(0x06, &Heater.kp);
             Heater.ki = GetWordL(&packet.data[4]);
-//            w->HeaterTabWrite(0x07, &Heater.ki);
             Heater.kd = GetWordL(&packet.data[6]);
-//            w->HeaterTabWrite(0x08, &Heater.kd);
             break;
         case 0x05:  // pt100 adc code
             Heater.pt100_adccode = GetLongL(&packet.data[2]);
-//            w->HeaterTabWrite(0x02, &Heater.pt100_adccode);
         default : break;
         }
     default : break;
@@ -177,8 +142,27 @@ SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, u
     can_id.field.Src = src_id;
     can_id.field.CmdNum = cmd_num;
 
-    return CAN_SendFrame(fd_cansocket, can_id.all, (const uint8_t *)data, dlc, 20);
+//    return CAN_SendFrame(fd_cansocket, can_id.all, (const uint8_t *)data, dlc, 20);
+    return 0;
 }
+
+Thread_Poll::Thread_Poll(QObject *parent)
+{}
+
+Thread_Poll::~Thread_Poll()
+{}
+
+Thread_Listen::Thread_Listen(QObject *parent)
+{}
+
+Thread_Listen::~Thread_Listen()
+{}
+
+Thread_Dummy::Thread_Dummy(QObject *parent)
+{}
+
+Thread_Dummy::~Thread_Dummy()
+{}
 
 /**
  * @ingroup extern
@@ -186,14 +170,15 @@ SendCommand(uint8_t target_id, uint8_t src_id, uint8_t cmd_num, uint8_t *data, u
  * @param none
  * @return none
  */
-void *
-CAN_Listen(void *para)
+void Thread_Listen::run()
 {
     int ret = 0;
-    struct can_frame frame_rx;
+    stCanPacket frame_rx;
+    frame_rx.can_id.all = 0x00;
+    memset(frame_rx.data, 0, 8);
 
     while (1) {
-        ret = CAN_RecvFrame(fd_cansocket, &frame_rx, 20);
+//        ret = CAN_RecvFrame(fd_cansocket, &frame_rx, 20);
         if (ret > 0 && (((stCanId *)&frame_rx.can_id)->Target == CANID_CHARGE)) {
             switch (((stCanId *)&frame_rx.can_id)->CmdNum) {
             case CMD_RD_ZONE:   // get info from target then update onto ui
@@ -209,8 +194,6 @@ CAN_Listen(void *para)
             }
         }
     }
-
-    return (void*)NULL;
 }
 
 /**
@@ -219,8 +202,7 @@ CAN_Listen(void *para)
  * @param interval: polling interval in millisecond
  * @return none
  */
-void *
-CAN_Poll(void *para)
+void Thread_Poll::run()
 {
     uint8_t i = 0;
     uint32_t can_id = 0x042022c3;
@@ -236,30 +218,39 @@ CAN_Poll(void *para)
         data[0] = 0x01;
         for (i = 0; i < 8; i++) {
             data[1] = i;
-            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
+//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
         }
 
         // poll for battery_2 information
         data[0] = 0x02;
         for (i = 1; i < 8; i++) {
             data[1] = i;
-            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
+//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
         }
 
         // poll for heater information
         data[0] = 0x03;
         for (i = 0; i < 6; i++) {
             data[1] = i;
-            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
+//            CAN_SendFrame(fd_cansocket, can_id, data, dlc, 20);
         }
 
         sleep(1);
     }
-
-    return (void*)NULL;
 }
 
+void Thread_Dummy::run()
+{
+    while (1)
+    {
+        QThread::sleep(1);
 
+        Battery_1.voltage++;
+        Battery_2.voltage++;
+        Battery_1.temperature++;
+        Battery_2.temperature++;
+    }
+}
 
 
 

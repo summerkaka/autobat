@@ -3,14 +3,14 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QThread>
+#include <QTimer>
 #include "dualcurve.h"
 #include "singlecurve.h"
-
-typedef enum {
-    kHeaterNoClick = 0,
-    kHeaterOff = 1,
-    kHeaterOn = 2,
-} radioButtonHeaterStatus;
+#include "app.h"
+#include "can_if.h"
+#include "main.h"
+#include "RT_CAN.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,13 +23,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void HeaterSendNewSetting(uint8_t item, const void *data);
     void HeaterTabWrite(uint8_t item, const void *data);
-    void BatterySendNewSetting(uint8_t item, const void *data);
     void BatteryTabWrite(uint8_t bat_index, uint8_t item, const void *data);
-
-protected:
-    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
 
@@ -61,14 +56,30 @@ private slots:
 
     void on_radioButton_heaterOff_pressed();
 
+    void on_spinBox_COMNum_valueChanged(int arg1);
+
+    void on_pushButton_OpenCAN_clicked();
+
+    void on_pushButton_CloseCAN_clicked();
+
+
+
+protected:
+    void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
+
 private:
     Ui::MainWindow *ui;
     QMessageBox msg;
+    bool com_isopen = false;
+    int16_t com_num = 0;
+    RT_CAN can_port;
     void PopConfirm(void);
-    void Pop(int value);
-    radioButtonHeaterStatus radio_heater;
-    uint8_t cfm = 0;
-    int timerId_upadteUi = 0;
+    void Pop(const char *buf, int16_t timeout);
+    uint8_t radio_heater, cfm = 0;
+    int timerId;
+    Thread_Listen *t_listen;
+    Thread_Poll *t_poll;
+    Thread_Dummy *t_dummy;
 };
 
 #endif // MAINWINDOW_H

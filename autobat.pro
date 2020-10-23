@@ -26,26 +26,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    libsocketcan.c \
     can_if.cpp \
-    gpio.cpp \
-    can_app.cpp \
     dualcurve.cpp \
-    lineeditor.cpp \
-    singlecurve.cpp
+    singlecurve.cpp \
+    RT_CAN.cpp \
+    RT_COM.cpp \
+    app.cpp
 
 HEADERS += \
         mainwindow.h \
-    libsocketcan.h \
-    gpio.h \
-    can_netlink.h \
     can_if.h \
     app_include.h \
     main.h \
-    can_app.h \
     dualcurve.h \
-    lineeditor.h \
-    singlecurve.h
+    singlecurve.h \
+    RT_CAN.h \
+    RT_COM.h \
+    app.h
 
 FORMS += \
         mainwindow.ui

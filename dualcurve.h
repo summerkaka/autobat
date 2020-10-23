@@ -36,7 +36,6 @@ private:
     QValueAxis *m_axis;
     QSplineSeries *curve1, *curve2;
     QScatterSeries *scatter1, *scatter2;
-    void updateCurve(void);
 
 signals:
 
